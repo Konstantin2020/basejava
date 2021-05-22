@@ -23,7 +23,7 @@ public class ArrayStorage {
         }
     }
 
-    Object get(String uuid) {
+    Resume get(String uuid) {
         Resume resumeForGet = null;
         for (int i = 0; i < storage.length; i++) {
             if (storage[i] != null && storage[i].toString().equals(uuid)) {
