@@ -17,10 +17,8 @@ public class ArrayStorage {
     }
 
     void save(Resume r) {
-        if (storage[resumeStorageSize] == null) {
                 storage[resumeStorageSize] = r;
                 resumeStorageSize++;
-        }
     }
 
     Resume get(String uuid) {
