@@ -6,14 +6,12 @@ public class ArrayStorage {
     int resumeStorageSize = 0;
 
     void clear() {
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] != null) {
+        if (resumeStorageSize > 0){
+            for (int i = 0; i < resumeStorageSize; i++) {
                 storage[i] = null;
-            } else {
-                break;
             }
-        }
         resumeStorageSize = 0;
+        }
     }
 
     void save(Resume r) {
@@ -23,8 +21,8 @@ public class ArrayStorage {
 
     Resume get(String uuid) {
         Resume resumeForGet = null;
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] != null && storage[i].toString().equals(uuid)) {
+        for (int i = 0; i < resumeStorageSize; i++) {
+            if (storage[i].toString().equals(uuid)) {
                 resumeForGet = storage[i];
                 break;
             }
@@ -36,25 +34,24 @@ public class ArrayStorage {
         int countForMove = 0;
         boolean isFindResume = false;
 
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] != null && storage[i].toString().equals(uuid)) {
+        for (int i = 0; i < resumeStorageSize; i++) {
+            if (storage[i].toString().equals(uuid)) {
                 storage[i] = null;
-                resumeStorageSize--;
                 countForMove = i;
                 isFindResume = true;
                 break;
             }
         }
         if (isFindResume) {
-            for (int j = countForMove + 1; j < storage.length; j++) {
+            for (int j = countForMove + 1; j < resumeStorageSize; j++) {
                 if (storage[j] != null) {
                     storage[j - 1] = storage[j];
                     storage[j] = null;
                 } else {
                     break;
                 }
-
             }
+            resumeStorageSize--;
         }
     }
 
