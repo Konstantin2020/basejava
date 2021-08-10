@@ -1,6 +1,5 @@
 package com.urise.webapp.storage;
 
-
 import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -9,7 +8,7 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    private Resume[] storage = new Resume[10000];
+    private Resume[] storage = new Resume[10_000];
     private int size = 0;
 
     public void clear() {
@@ -19,58 +18,42 @@ public class ArrayStorage {
         }
         size = 0;
         */
-        Arrays.fill(storage, null);
+        Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
-    public void update(Resume r) {
-        if (get(r.getUuid()) != null) {
-            System.out.println("Update обновляет резюме " + r.getUuid() + ".");
-            r.setUuid(r.getUuid());
+    public void update(Resume resume) {
+        Resume resumeForUpdate = checkInStorage(resume.getUuid());
+        int indexForUpdate = java.util.Arrays.asList(storage).indexOf(resumeForUpdate);
+        if (resumeForUpdate != null) {
+            System.out.println("Update обновляет резюме " + resume.getUuid() + ".");
+            storage[indexForUpdate].setUuid(resume.getUuid());
         }
     }
 
-    public void save(Resume r) {
-        if (size >= 10000) {
+    public void save(Resume resume) {
+        if (size >= storage.length) {
             System.out.println("Хранилище переполнено, количество занятых ячеек массива" + size + " .");
         } else {
-            if (get(r.getUuid()) == null) {
-                System.out.println("Save сохраняет резюме " + r.getUuid() + ".");
-                storage[size] = r;
+            if (checkInStorage(resume.getUuid()) == null) {
+                System.out.println("Save сохраняет резюме " + resume.getUuid() + ".");
+                storage[size] = resume;
                 size++;
             }
         }
     }
 
     public Resume get(String uuid) {
-        Resume resumeForGet = null;
-        for (int i = 0; i < size; i++) {
-            if (storage[i].toString().equals(uuid)) {
-                resumeForGet = storage[i];
-                break;
-            }
-        }
-        if (resumeForGet != null) {
-            System.out.println("Резюме " + uuid + " в хранилище найдено!");
-        } else {
-            System.out.println("Резюме " + uuid + " в хранилище не найдено!");
-        }
+        Resume resumeForGet = checkInStorage(uuid);
         return resumeForGet;
     }
 
     public void delete(String uuid) {
-        int countForMove = -1;
-        for (int i = 0; i < size; i++) {
-            if (storage[i].toString().equals(uuid)) {
-                storage[i] = null;
-                countForMove = i;
-                System.out.println("Резюме " + uuid + " в хранилище найдено и удалено!");
-                break;
-            }
-        }
-        if (countForMove == -1) {
-            System.out.println("Резюме " + uuid + " в хранилище не найдено!");
-        } else {
+        Resume resumeForDelete = checkInStorage(uuid);
+        int countForMove = java.util.Arrays.asList(storage).indexOf(resumeForDelete);
+        if (resumeForDelete != null) {
+            storage[countForMove] = null;
+            System.out.println("Резюме " + uuid + " удалено!");
             for (int j = countForMove + 1; j < size; j++) {
                 storage[j - 1] = storage[j];
             }
@@ -85,13 +68,28 @@ public class ArrayStorage {
      */
     public Resume[] getAll() {
         Resume[] allResume = new Resume[size];
-        for (int j = 0; j < allResume.length; j++) {
-            allResume[j] = storage[j];
-        }
+        System.arraycopy(storage, 0, allResume, 0, allResume.length);
         return allResume;
     }
 
     public int size() {
         return size;
     }
+
+    public Resume checkInStorage(String uuid) {
+        Resume resumeForCheck = null;
+        for (int i = 0; i < size; i++) {
+            if (storage[i].toString().equals(uuid)) {
+                resumeForCheck = storage[i];
+                break;
+            }
+        }
+        if (resumeForCheck != null) {
+            System.out.println("Резюме " + uuid + " в хранилище найдено!");
+        } else {
+            System.out.println("Резюме " + uuid + " в хранилище не найдено!");
+        }
+        return resumeForCheck;
+    }
 }
+
