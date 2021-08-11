@@ -12,51 +12,44 @@ public class ArrayStorage {
     private int size = 0;
 
     public void clear() {
-        /*
-        for (int i = 0; i < size; i++) {
-            storage[i] = null;
-        }
-        size = 0;
-        */
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
     public void update(Resume resume) {
-        Resume resumeForUpdate = checkInStorage(resume.getUuid());
-        int indexForUpdate = java.util.Arrays.asList(storage).indexOf(resumeForUpdate);
-        if (resumeForUpdate != null) {
-            System.out.println("Update обновляет резюме " + resume.getUuid() + ".");
-            storage[indexForUpdate].setUuid(resume.getUuid());
+        int indexForUpdate = checkInStorage(resume.getUuid());
+        if (indexForUpdate != -1) {
+            System.out.println("Update обновляет резюме " + storage[indexForUpdate].getUuid() + ".");
+            storage[indexForUpdate] = resume;
         }
     }
 
     public void save(Resume resume) {
         if (size >= storage.length) {
-            System.out.println("Хранилище переполнено, количество занятых ячеек массива" + size + " .");
-        } else {
-            if (checkInStorage(resume.getUuid()) == null) {
+            System.out.println("Хранилище переполнено, количество занятых ячеек массива" + size + ".");
+        } else if (checkInStorage(resume.getUuid()) == -1) {
                 System.out.println("Save сохраняет резюме " + resume.getUuid() + ".");
                 storage[size] = resume;
                 size++;
             }
-        }
     }
 
     public Resume get(String uuid) {
-        Resume resumeForGet = checkInStorage(uuid);
+        int indexForGet = checkInStorage(uuid);
+        Resume resumeForGet = null;
+        if (indexForGet != -1) {
+            resumeForGet = storage[indexForGet];
+        }
         return resumeForGet;
     }
 
     public void delete(String uuid) {
-        Resume resumeForDelete = checkInStorage(uuid);
-        int countForMove = java.util.Arrays.asList(storage).indexOf(resumeForDelete);
-        if (resumeForDelete != null) {
-            storage[countForMove] = null;
-            System.out.println("Резюме " + uuid + " удалено!");
-            for (int j = countForMove + 1; j < size; j++) {
-                storage[j - 1] = storage[j];
-            }
+        int indexForDelete = checkInStorage(uuid);
+        if (indexForDelete != -1) {
+            System.out.println("Резюме " + storage[indexForDelete].getUuid() + " удалено!");
+            storage[indexForDelete] = null;
+            if (size - (indexForDelete + 1) >= 0)
+                System.arraycopy(storage, indexForDelete + 1, storage, indexForDelete + 1 - 1, size - (indexForDelete + 1));
             storage[size - 1] = null;
             size--;
         }
@@ -76,20 +69,20 @@ public class ArrayStorage {
         return size;
     }
 
-    public Resume checkInStorage(String uuid) {
-        Resume resumeForCheck = null;
+    public int checkInStorage(String uuid) {
+        int indexForCheck = -1;
         for (int i = 0; i < size; i++) {
             if (storage[i].toString().equals(uuid)) {
-                resumeForCheck = storage[i];
+                indexForCheck = i;
                 break;
             }
         }
-        if (resumeForCheck != null) {
+        if (indexForCheck != -1) {
             System.out.println("Резюме " + uuid + " в хранилище найдено!");
         } else {
             System.out.println("Резюме " + uuid + " в хранилище не найдено!");
         }
-        return resumeForCheck;
+        return indexForCheck;
     }
 }
 
