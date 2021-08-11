@@ -28,10 +28,10 @@ public class ArrayStorage {
         if (size >= storage.length) {
             System.out.println("Хранилище переполнено, количество занятых ячеек массива" + size + ".");
         } else if (checkInStorage(resume.getUuid()) == -1) {
-                System.out.println("Save сохраняет резюме " + resume.getUuid() + ".");
-                storage[size] = resume;
-                size++;
-            }
+            System.out.println("Save сохраняет резюме " + resume.getUuid() + ".");
+            storage[size] = resume;
+            size++;
+        }
     }
 
     public Resume get(String uuid) {
