@@ -1,5 +1,7 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.model.Resume;
+
 /**
  * Array based storage for Resumes
  */
@@ -14,11 +16,12 @@ public class ArrayStorage extends AbstractArrayStorage {
                 break;
             }
         }
-        if (indexForCheck != -1) {
-            System.out.println("Резюме " + uuid + " в хранилище найдено!");
-        } else {
-            System.out.println("Резюме " + uuid + " в хранилище не найдено!");
-        }
         return indexForCheck;
+    }
+
+    @Override
+    protected void finalSave(Resume resume, int indexForFinalSave) {
+        storage[size] = resume;
+        size++;
     }
 }

@@ -23,15 +23,13 @@ public abstract class AbstractArrayStorage implements Storage {
 
     @Override
     public final void save(Resume resume) {
-        int indexForSortSave = getIndex(resume.getUuid());
+        int indexForSave = getIndex(resume.getUuid());
         if (size >= STORAGE_LIMIT) {
             System.out.println("Хранилище переполнено, количество занятых ячеек массива" + size + ".");
-        } else if (indexForSortSave >= 0) {
-            System.out.println("Резюме " + resume.getUuid() + " уже содержится хранилище.");
+        } else if (indexForSave >= 0) {
+            System.out.println("Резюме " + resume.getUuid() + " уже содержится в хранилище.");
         } else {
-            size++;
-            System.arraycopy(storage, -indexForSortSave - 1, storage, -indexForSortSave, size - (-indexForSortSave));
-            storage[-indexForSortSave - 1] = resume;
+            finalSave(resume, indexForSave);
             System.out.println("Save сохраняет резюме " + resume.getUuid() + ".");
         }
     }
@@ -74,4 +72,6 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     protected abstract int getIndex(String uuid);
+
+    protected abstract void finalSave(Resume resume, int indexForFinalSave);
 }

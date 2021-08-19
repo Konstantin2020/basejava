@@ -12,4 +12,11 @@ public class SortedArrayStorage extends AbstractArrayStorage {
         searchKey.setUuid(uuid);
         return Arrays.binarySearch(storage, 0, size, searchKey);
     }
+
+    @Override
+    protected void finalSave(Resume resume, int indexForFinalSave) {
+        size++;
+        System.arraycopy(storage, -indexForFinalSave - 1, storage, -indexForFinalSave, size - (-indexForFinalSave));
+        storage[-indexForFinalSave - 1] = resume;
+    }
 }
