@@ -11,12 +11,12 @@ public abstract class AbstractArrayStorage implements Storage {
     protected int size = 0;
 
     @Override
-    public final int size() {
+    public int size() {
         return size;
     }
 
     @Override
-    public final void clear() {
+    public void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
@@ -29,7 +29,8 @@ public abstract class AbstractArrayStorage implements Storage {
         } else if (indexForSave >= 0) {
             System.out.println("Резюме " + resume.getUuid() + " уже содержится в хранилище.");
         } else {
-            finalSave(resume, indexForSave);
+            size++;
+            saveToArray(resume, indexForSave);
             System.out.println("Save сохраняет резюме " + resume.getUuid() + ".");
         }
     }
@@ -37,7 +38,9 @@ public abstract class AbstractArrayStorage implements Storage {
     @Override
     public final void update(Resume resume) {
         int indexForUpdate = getIndex(resume.getUuid());
-        if (indexForUpdate >= 0) {
+        if (indexForUpdate < 0) {
+            System.out.println("Резюме " + resume.getUuid() + " в хранилище не найдено! Обновить невозможно!");
+        } else {
             System.out.println("Update обновляет резюме " + storage[indexForUpdate].getUuid() + ".");
             storage[indexForUpdate] = resume;
         }
@@ -46,7 +49,9 @@ public abstract class AbstractArrayStorage implements Storage {
     @Override
     public final void delete(String uuid) {
         int indexForDelete = getIndex(uuid);
-        if (indexForDelete >= 0) {
+        if (indexForDelete < 0) {
+            System.out.println("Резюме " + uuid + " в хранилище не найдено! Удалить невозможно!");
+        } else {
             System.out.println("Резюме " + storage[indexForDelete].getUuid() + " удалено!");
             storage[indexForDelete] = null;
             if (size - (indexForDelete + 1) >= 0)
@@ -67,11 +72,11 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     @Override
-    public final Resume[] getAll() {
+    public Resume[] getAll() {
         return Arrays.copyOfRange(storage, 0, size);
     }
 
     protected abstract int getIndex(String uuid);
 
-    protected abstract void finalSave(Resume resume, int indexForFinalSave);
+    protected abstract void saveToArray(Resume resume, int indexForSaveToArray);
 }
