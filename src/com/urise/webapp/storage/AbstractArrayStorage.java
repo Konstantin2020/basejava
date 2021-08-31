@@ -31,11 +31,10 @@ public abstract class AbstractArrayStorage implements Storage {
             throw new StorageException("Storage overflow", resume.getUuid());
         } else if (indexForSave >= 0) {
             throw new ExistStorageException(resume.getUuid());
-        } else {
-            size++;
-            saveToArray(resume, indexForSave);
-            System.out.println("Save сохраняет резюме " + resume.getUuid() + ".");
         }
+        size++;
+        saveToArray(resume, indexForSave);
+        System.out.println("Save сохраняет резюме " + resume.getUuid() + ".");
     }
 
     @Override
@@ -43,10 +42,9 @@ public abstract class AbstractArrayStorage implements Storage {
         int indexForUpdate = getIndex(resume.getUuid());
         if (indexForUpdate < 0) {
             throw new NotExistStorageException(resume.getUuid());
-        } else {
-            System.out.println("Update обновляет резюме " + storage[indexForUpdate].getUuid() + ".");
-            storage[indexForUpdate] = resume;
         }
+        System.out.println("Update обновляет резюме " + storage[indexForUpdate].getUuid() + ".");
+        storage[indexForUpdate] = resume;
     }
 
     @Override
@@ -54,14 +52,13 @@ public abstract class AbstractArrayStorage implements Storage {
         int indexForDelete = getIndex(uuid);
         if (indexForDelete < 0) {
             throw new NotExistStorageException(uuid);
-        } else {
-            System.out.println("Резюме " + storage[indexForDelete].getUuid() + " удалено!");
-            storage[indexForDelete] = null;
-            if (size - (indexForDelete + 1) >= 0)
-                System.arraycopy(storage, indexForDelete + 1, storage, indexForDelete, size - (indexForDelete + 1));
-            storage[size - 1] = null;
-            size--;
         }
+        System.out.println("Резюме " + storage[indexForDelete].getUuid() + " удалено!");
+        storage[indexForDelete] = null;
+        if (size - (indexForDelete + 1) >= 0)
+            System.arraycopy(storage, indexForDelete + 1, storage, indexForDelete, size - (indexForDelete + 1));
+        storage[size - 1] = null;
+        size--;
     }
 
     @Override
