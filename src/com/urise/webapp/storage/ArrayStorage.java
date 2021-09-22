@@ -11,7 +11,7 @@ public class ArrayStorage extends AbstractArrayStorage {
     int getIndex(String uuid) {
         int indexForCheck = -1;
         for (int i = 0; i < size; i++) {
-            if (storage[i].getUuid() == new Resume(uuid).getUuid()) {
+            if (storage[i].getUuid().equals(uuid)) {
                 indexForCheck = i;
                 break;
             }
@@ -21,8 +21,6 @@ public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected void saveToArray(Resume resume, int indexForSave) {
-        size++;
         storage[size - 1] = resume;
-
     }
 }

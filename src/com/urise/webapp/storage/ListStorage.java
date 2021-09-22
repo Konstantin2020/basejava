@@ -1,9 +1,12 @@
 package com.urise.webapp.storage;
 
-import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.Resume;
 
+import java.util.ArrayList;
+
 public class ListStorage extends AbstractStorage {
+
+    ArrayList<Resume> collection = new ArrayList<>();
 
     @Override
     int getIndex(String uuid) {
@@ -11,6 +14,7 @@ public class ListStorage extends AbstractStorage {
         int indexForCheck = collection.indexOf(resume);
         return indexForCheck;
     }
+
 
     @Override
     protected void saveToArray(Resume resume, int indexForSave) {
@@ -23,31 +27,20 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public void update(Resume resume) {
-        int indexForUpdate = getIndex(resume.getUuid());
-        if (indexForUpdate < 0) {
-            throw new NotExistStorageException(resume.getUuid());
-        }
+    public void updateToArray(Resume resume, int indexForUpdate) {
         System.out.println("Update обновляет резюме " + collection.get(indexForUpdate) + ".");
         collection.set(indexForUpdate, resume);
     }
 
     @Override
     public final Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        }
-        return collection.get(index);
+        return collection.get(checkIndexForUuid(uuid));
     }
 
     @Override
-    public void delete(String uuid) {
-        int indexForDelete = getIndex(uuid);
-        if (indexForDelete < 0) {
-            throw new NotExistStorageException(uuid);
-        }
-        collection.remove(getIndex(uuid));
+    public void deleteFromArray(int indexFordelete) {
+        collection.remove(indexFordelete);
+        size--;
     }
 
     @Override

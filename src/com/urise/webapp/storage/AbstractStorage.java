@@ -1,43 +1,60 @@
 package com.urise.webapp.storage;
 
 import com.urise.webapp.exception.ExistStorageException;
+import com.urise.webapp.exception.NotExistStorageException;
+import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
-
-import java.util.ArrayList;
 
 public abstract class AbstractStorage implements Storage {
 
-    ArrayList<Resume> collection = new ArrayList<>();
+    protected static final int STORAGE_LIMIT = 10; //_000;
+
+    protected int size = 0;
 
     @Override
-    public abstract void clear();
-
-    @Override
-    public abstract void update(Resume resume);
-
-    @Override
-    public void save(Resume resume) {
+    public final void save(Resume resume) {
         int indexForSave = getIndex(resume.getUuid());
-        if (indexForSave >= 0) {
+        if (size == STORAGE_LIMIT) {
+            throw new StorageException("Storage overflow", resume.getUuid());
+        } else if (indexForSave >= 0) {
             throw new ExistStorageException(resume.getUuid());
         }
+        size++;
         saveToArray(resume, indexForSave);
         System.out.println("Save сохраняет резюме " + resume.getUuid() + ".");
     }
 
     @Override
-    public abstract Resume get(String uuid);
+    public final void update(Resume resume) {
+        updateToArray(resume, checkIndexForResume(resume));
+    }
 
     @Override
-    public abstract void delete(String uuid);
+    public final void delete(String uuid) {
+        deleteFromArray(checkIndexForUuid(uuid));
+    }
 
-    @Override
-    public abstract Resume[] getAll();
+    public int checkIndexForResume(Resume resume) {
+        int index = getIndex(resume.getUuid());
+        if (index < 0) {
+            throw new NotExistStorageException(resume.getUuid());
+        }
+        return index;
+    }
 
-    @Override
-    public abstract int size();
+    public int checkIndexForUuid(String uuid) {
+        int index = getIndex(uuid);
+        if (index < 0) {
+            throw new NotExistStorageException(uuid);
+        }
+        return index;
+    }
 
     abstract int getIndex(String uuid);
 
     protected abstract void saveToArray(Resume resume, int indexForSave);
+
+    protected abstract void updateToArray(Resume resume, int indexForUpdate);
+
+    protected abstract void deleteFromArray(int indexForDelete);
 }
