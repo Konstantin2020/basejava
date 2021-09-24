@@ -2,13 +2,12 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
-import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.urise.webapp.storage.AbstractArrayStorage.STORAGE_LIMIT;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractStorageTest {
 
@@ -57,7 +56,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void update() throws Exception {
         storage.update(resume2);
-        assertTrue(resume2 == storage.get(UUID_2));
+        assertEquals(resume2, storage.get(UUID_2));
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -105,21 +104,6 @@ public abstract class AbstractStorageTest {
     @Test(expected = NotExistStorageException.class)
     public void getNotExist() throws Exception {
         storage.get(UUID_4);
-    }
-
-    @Test(expected = StorageException.class)
-    public void getOverflowWithException() throws Exception {
-        for (int i = storage.size() + 1; i <= STORAGE_LIMIT; i++) {
-            storage.save(new Resume());
-            if (storage.size() > STORAGE_LIMIT) {
-                fail("Переполнение произошло раньше времени");
-            }
-            if (storage.size() == STORAGE_LIMIT) {
-                System.out.println("Заполненность хранилища: " + storage.size() + " из " + STORAGE_LIMIT);
-                System.out.println("Попытка реализовать переполнение и вызвать исключение...");
-                storage.save(new Resume());
-            }
-        }
     }
 
     private void assertGet(Resume resume) {

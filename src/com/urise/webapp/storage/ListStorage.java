@@ -3,56 +3,53 @@ package com.urise.webapp.storage;
 import com.urise.webapp.model.Resume;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListStorage extends AbstractStorage {
 
-    ArrayList<Resume> collection = new ArrayList<>();
+    private List storageList = new ArrayList<Resume>();
 
     @Override
-    int getIndex(String uuid) {
-        Resume resume = new Resume(uuid);
-        int indexForCheck = collection.indexOf(resume);
-        return indexForCheck;
+    protected int getIndex(String uuid) {
+        return storageList.indexOf(new Resume(uuid));
     }
 
-
     @Override
-    protected void saveToArray(Resume resume, int indexForSave) {
-        collection.add(resume);
+    protected void saveToStorage(Resume resume, int indexForSave) {
+        storageList.add(resume);
     }
 
     @Override
     public void clear() {
-        collection.removeAll(collection);
+        storageList.clear();
     }
 
     @Override
-    public void updateToArray(Resume resume, int indexForUpdate) {
-        System.out.println("Update обновляет резюме " + collection.get(indexForUpdate) + ".");
-        collection.set(indexForUpdate, resume);
+    protected void updateToStorage(Resume resume, int indexForUpdate) {
+        System.out.println("Update обновляет резюме " + storageList.get(indexForUpdate) + ".");
+        storageList.set(indexForUpdate, resume);
     }
 
     @Override
-    public final Resume get(String uuid) {
-        return collection.get(checkIndexForUuid(uuid));
+    protected final Resume getFromStorage(String uuid) {
+        return (Resume) storageList.get(checkIndexForUuid(uuid));
     }
 
     @Override
-    public void deleteFromArray(int indexFordelete) {
-        collection.remove(indexFordelete);
-        size--;
+    protected void deleteFromStorage(int indexFordelete) {
+        storageList.remove(indexFordelete);
     }
 
     @Override
     public Resume[] getAll() {
-        Resume[] resumesToArray = new Resume[collection.size()];
-        resumesToArray = collection.toArray(resumesToArray);
+        Resume[] resumesToArray = new Resume[storageList.size()];
+        resumesToArray = (Resume[]) storageList.toArray(resumesToArray);
         return resumesToArray;
     }
 
     @Override
     public int size() {
-        return collection.size();
+        return storageList.size();
     }
 
 }
