@@ -32,7 +32,7 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected final Resume getFromStorage(String uuid) {
-        return (Resume) storageList.get(checkIndexForUuid(uuid));
+        return (Resume) storageList.get(checkIndex(uuid));
     }
 
     @Override
