@@ -9,18 +9,18 @@ public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected int getIndex(String uuid) {
-        int indexForCheck = -1;
+        int index = -1;
         for (int i = 0; i < size; i++) {
             if (storage[i].getUuid().equals(uuid)) {
-                indexForCheck = i;
+                index = i;
                 break;
             }
         }
-        return indexForCheck;
+        return index;
     }
 
     @Override
-    protected void saveToStorage(Resume resume, int indexForSave) {
+    protected void saveToStorage(Resume resume, int index) {
         storage[size - 1] = resume;
     }
 }

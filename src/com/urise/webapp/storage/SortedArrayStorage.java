@@ -13,10 +13,10 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void saveToStorage(Resume resume, int indexForSave) {
-        indexForSave = -indexForSave;
-        System.arraycopy(storage, indexForSave - 1, storage, indexForSave, size - indexForSave);
-        storage[indexForSave - 1] = resume;
+    protected void saveToStorage(Resume resume, int index) {
+        index = -index;
+        System.arraycopy(storage, index - 1, storage, index, size - index);
+        storage[index - 1] = resume;
 
     }
 }

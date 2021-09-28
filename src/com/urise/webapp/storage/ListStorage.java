@@ -15,7 +15,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void saveToStorage(Resume resume, int indexForSave) {
+    protected void saveToStorage(Resume resume, int index) {
         storageList.add(resume);
     }
 
@@ -25,19 +25,19 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateToStorage(Resume resume, int indexForUpdate) {
-        System.out.println("Update обновляет резюме " + storageList.get(indexForUpdate) + ".");
-        storageList.set(indexForUpdate, resume);
+    protected void updateToStorage(Resume resume, int index) {
+        System.out.println("Update обновляет резюме " + storageList.get(index) + ".");
+        storageList.set(index, resume);
     }
 
     @Override
-    protected final Resume getFromStorage(String uuid) {
-        return (Resume) storageList.get(checkIndex(uuid));
+    protected final Resume getFromStorage(String uuid, int index) {
+        return (Resume) storageList.get(index);
     }
 
     @Override
-    protected void deleteFromStorage(int indexFordelete) {
-        storageList.remove(indexFordelete);
+    protected void deleteFromStorage(String uuid, int index) {
+        storageList.remove(index);
     }
 
     @Override

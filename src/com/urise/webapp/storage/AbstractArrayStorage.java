@@ -27,38 +27,38 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     @Override
     public final void save(Resume resume) {
-        int indexForSave = getIndex(resume.getUuid());
+        int index = getIndex(resume.getUuid());
         if (size == STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", resume.getUuid());
         }
-        if (indexForSave >= 0) {
+        if (index >= 0) {
             throw new ExistStorageException(resume.getUuid());
         }
         size++;
-        saveToStorage(resume, indexForSave);
+        saveToStorage(resume, index);
         System.out.println("Save сохраняет резюме " + resume.getUuid() + ".");
     }
 
 
     @Override
-    protected final void updateToStorage(Resume resume, int indexForUpdate) {
-        System.out.println("Update обновляет резюме " + storage[indexForUpdate].getUuid() + ".");
-        storage[indexForUpdate] = resume;
+    protected final void updateToStorage(Resume resume, int index) {
+        System.out.println("Update обновляет резюме " + storage[index].getUuid() + ".");
+        storage[index] = resume;
     }
 
 
-    protected final void deleteFromStorage(int indexForDelete) {
-        System.out.println("Резюме " + storage[indexForDelete].getUuid() + " удалено!");
-        storage[indexForDelete] = null;
-        if (size - (indexForDelete + 1) >= 0)
-            System.arraycopy(storage, indexForDelete + 1, storage, indexForDelete, size - (indexForDelete + 1));
+    protected final void deleteFromStorage(String uuid, int index) {
+        System.out.println("Резюме " + storage[index].getUuid() + " удалено!");
+        storage[index] = null;
+        if (size - (index + 1) >= 0)
+            System.arraycopy(storage, index + 1, storage, index, size - (index + 1));
         storage[size - 1] = null;
         size--;
     }
 
     @Override
-    protected final Resume getFromStorage(String uuid) {
-        return storage[checkIndex(uuid)];
+    protected final Resume getFromStorage(String uuid, int index) {
+        return storage[index];
     }
 
     @Override
