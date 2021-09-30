@@ -4,21 +4,21 @@ import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.Resume;
 
-public abstract class AbstractStorage implements Storage {
+public abstract class AbstractStorage<SKey> implements Storage {
 
     @Override
     public void save(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index >= 0) {
+        SKey searchKey = getIndex(resume.getUuid());
+        if (isExistInStorage(searchKey)) {
             throw new ExistStorageException(resume.getUuid());
         }
-        saveToStorage(resume, index);
+        saveToStorage(resume, searchKey);
         System.out.println("Save сохраняет резюме " + resume.getUuid() + ".");
     }
 
     @Override
     public final Resume get(String uuid) {
-        return getFromStorage(uuid, checkIndex(uuid));
+        return getFromStorage(checkIndex(uuid));
     }
 
     @Override
@@ -28,24 +28,26 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public final void delete(String uuid) {
-        deleteFromStorage(uuid, checkIndex(uuid));
+        deleteFromStorage(checkIndex(uuid));
     }
 
-    public final int checkIndex(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
+    public final SKey checkIndex(String uuid) {
+        SKey searchKey = getIndex(uuid);
+        if (!isExistInStorage(searchKey)) {
             throw new NotExistStorageException(uuid);
         }
-        return index;
+        return searchKey;
     }
 
-    protected abstract int getIndex(String uuid);
+    protected abstract SKey getIndex(String uuid);
 
-    protected abstract void saveToStorage(Resume resume, int index);
+    protected abstract void saveToStorage(Resume resume, SKey searchKey);
 
-    protected abstract Resume getFromStorage(String uuid, int index);
+    protected abstract Resume getFromStorage(SKey searchKey);
 
-    protected abstract void updateToStorage(Resume resume, int index);
+    protected abstract void updateToStorage(Resume resume, SKey searchKey);
 
-    protected abstract void deleteFromStorage(String uuid, int index);
+    protected abstract void deleteFromStorage(SKey searchKey);
+
+    protected abstract boolean isExistInStorage(SKey searchKey);
 }

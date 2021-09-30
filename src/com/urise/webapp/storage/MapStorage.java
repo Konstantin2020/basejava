@@ -2,25 +2,25 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
-public class MapStorage extends AbstractStorage {
+public class MapStorage extends AbstractStorage<Resume> {
 
-    Map<String, Resume> storageMap = new LinkedHashMap<>();
+    private Map<String, Resume> storageMap = new HashMap<>();
 
     @Override
-    protected int getIndex(String uuid) {
-        int isContainsInMap = -1;
-        if (storageMap.containsKey(uuid)) {
-            isContainsInMap = 1;
-        }
-        return isContainsInMap;
+    protected Resume getIndex(String uuid) {
+        return storageMap.get(uuid);
+    }
+
+    protected final boolean isExistInStorage(Resume resume) {
+        return resume != null;
     }
 
 
     @Override
-    protected void saveToStorage(Resume resume, int index) {
+    protected void saveToStorage(Resume resume, Resume searchKey) {
         storageMap.put(resume.getUuid(), resume);
     }
 
@@ -30,29 +30,24 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateToStorage(Resume resume, int index) {
+    protected void updateToStorage(Resume resume, Resume searchKey) {
         System.out.println("Update обновляет резюме " + storageMap.get(resume.getUuid()) + ".");
-        storageMap.put(resume.getUuid(), resume);
+        storageMap.put(searchKey.getUuid(), resume);
     }
 
     @Override
-    protected final Resume getFromStorage(String uuid, int index) {
-        return storageMap.get(uuid);
+    protected final Resume getFromStorage(Resume searchKey) {
+        return storageMap.get(searchKey.getUuid());
     }
 
     @Override
-    protected void deleteFromStorage(String uuid, int index) {
-        storageMap.remove(uuid);
+    protected void deleteFromStorage(Resume searchKey) {
+        storageMap.remove(searchKey.getUuid());
     }
 
     @Override
     public Resume[] getAll() {
-        Resume[] resumesToArray = new Resume[storageMap.size()];
-        int i = 0;
-        for (java.util.Map.Entry<String, Resume> entry : storageMap.entrySet()) {
-            resumesToArray[i] = entry.getValue();
-            i++;
-        }
+        Resume[] resumesToArray = storageMap.values().toArray(new Resume[storageMap.size()]);
         return resumesToArray;
     }
 

@@ -1,12 +1,11 @@
 package com.urise.webapp.storage;
 
-import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
 
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
 
     protected static final int STORAGE_LIMIT = 10; //_000;
 
@@ -26,28 +25,26 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public final void save(Resume resume) {
-        int index = getIndex(resume.getUuid());
+    public final void saveToStorage(Resume resume, Integer index) {
         if (size == STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", resume.getUuid());
         }
-        if (index >= 0) {
-            throw new ExistStorageException(resume.getUuid());
-        }
         size++;
-        saveToStorage(resume, index);
+        saveToArray(resume, index);
         System.out.println("Save сохраняет резюме " + resume.getUuid() + ".");
     }
 
+    protected abstract void saveToArray(Resume resume, Integer index);
+
 
     @Override
-    protected final void updateToStorage(Resume resume, int index) {
+    protected final void updateToStorage(Resume resume, Integer index) {
         System.out.println("Update обновляет резюме " + storage[index].getUuid() + ".");
         storage[index] = resume;
     }
 
 
-    protected final void deleteFromStorage(String uuid, int index) {
+    protected final void deleteFromStorage(Integer index) {
         System.out.println("Резюме " + storage[index].getUuid() + " удалено!");
         storage[index] = null;
         if (size - (index + 1) >= 0)
@@ -57,13 +54,21 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected final Resume getFromStorage(String uuid, int index) {
+    protected final boolean isExistInStorage(Integer searchKey) {
+        if (searchKey > -1) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected final Resume getFromStorage(Integer index) {
         return storage[index];
     }
 
     @Override
     public final Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, size);
+        return Arrays.copyOf(storage, size);
     }
 
 }
