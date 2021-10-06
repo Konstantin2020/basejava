@@ -3,14 +3,15 @@ package com.urise.webapp.storage;
 import com.urise.webapp.model.Resume;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ListStorage extends AbstractStorage<Integer> {
 
-    private List storageList = new ArrayList<Resume>();
+    private List<Resume> storageList = new ArrayList();
 
     @Override
-    protected Integer getIndex(String uuid) {
+    protected Integer getSearchKey(String uuid) {
         return storageList.indexOf(new Resume(uuid));
     }
 
@@ -32,7 +33,7 @@ public class ListStorage extends AbstractStorage<Integer> {
 
     @Override
     protected final Resume getFromStorage(Integer index) {
-        return (Resume) storageList.get(index);
+        return storageList.get(index);
     }
 
     @Override
@@ -41,18 +42,15 @@ public class ListStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected final boolean isExistInStorage(Integer searchKey) {
-        if (searchKey > -1) {
-            return true;
-        }
-        return false;
+    protected final boolean isExistInStorage(Integer index) {
+        return index > -1;
     }
 
     @Override
-    public Resume[] getAll() {
+    public List<Resume> getAll() {
         Resume[] resumesToArray = new Resume[storageList.size()];
-        resumesToArray = (Resume[]) storageList.toArray(resumesToArray);
-        return resumesToArray;
+        resumesToArray = storageList.toArray(resumesToArray);
+        return Arrays.asList(resumesToArray);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
 public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
 
@@ -54,11 +55,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected final boolean isExistInStorage(Integer searchKey) {
-        if (searchKey > -1) {
-            return true;
-        }
-        return false;
+    protected final boolean isExistInStorage(Integer index) {
+        return index > -1;
     }
 
     @Override
@@ -67,8 +65,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    public final Resume[] getAll() {
-        return Arrays.copyOf(storage, size);
+    public final List<Resume> getAll() {
+        return Arrays.asList(Arrays.copyOf(storage, size));
     }
 
 }
