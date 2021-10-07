@@ -34,12 +34,7 @@ public abstract class AbstractStorage<SKey> implements Storage {
         deleteFromStorage(checkSearchKey(uuid));
     }
 
-    public static final Comparator<Resume> COMPARATOR_BY_RESUME = Comparator.comparing(Resume::getFullName);
-
-    public static final Comparator<Resume> COMPARATOR_BY_UUID = Comparator.comparing(Resume::getUuid);
-
-    public static final Comparator<Resume> RESULT_COMPARATOR = COMPARATOR_BY_RESUME.thenComparing(COMPARATOR_BY_UUID);
-
+    public static final Comparator<Resume> GENERAL_COMPARATOR = Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
 
     public final SKey checkSearchKey(String uuid) {
         SKey searchKey = getSearchKey(uuid);
@@ -50,9 +45,9 @@ public abstract class AbstractStorage<SKey> implements Storage {
     }
 
     public List<Resume> getAllSorted() {
-        List<Resume> result = getAll();
-        result.sort(RESULT_COMPARATOR);
-        return result;
+        List<Resume> allResume = getResumesAsList();
+        allResume.sort(GENERAL_COMPARATOR);
+        return allResume;
     }
 
     protected abstract SKey getSearchKey(String uuid);
@@ -67,5 +62,5 @@ public abstract class AbstractStorage<SKey> implements Storage {
 
     protected abstract boolean isExistInStorage(SKey searchKey);
 
-    public abstract List<Resume> getAll();
+    public abstract List<Resume> getResumesAsList();
 }

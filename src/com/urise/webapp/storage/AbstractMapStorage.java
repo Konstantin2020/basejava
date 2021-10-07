@@ -28,7 +28,7 @@ public abstract class AbstractMapStorage<SKey> extends AbstractStorage<SKey> {
     }
 
     @Override
-    public List<Resume> getAll() {
+    public List<Resume> getResumesAsList() {
         return Arrays.asList(storageMap.values().toArray(new Resume[0]));
     }
 }

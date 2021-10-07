@@ -32,7 +32,6 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
         }
         size++;
         saveToArray(resume, index);
-        System.out.println("Save сохраняет резюме " + resume.getUuid() + ".");
     }
 
     protected abstract void saveToArray(Resume resume, Integer index);
@@ -65,7 +64,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    public final List<Resume> getAll() {
+    public final List<Resume> getResumesAsList() {
         return Arrays.asList(Arrays.copyOf(storage, size));
     }
 

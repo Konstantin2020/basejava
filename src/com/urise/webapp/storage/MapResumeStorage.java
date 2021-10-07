@@ -2,9 +2,6 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class MapResumeStorage extends AbstractMapStorage<Resume> {
 
     @Override
@@ -26,11 +23,6 @@ public class MapResumeStorage extends AbstractMapStorage<Resume> {
     @Override
     protected void deleteFromStorage(Resume searchKey) {
         storageMap.remove(searchKey.getUuid());
-    }
-
-    @Override
-    public List<Resume> getAll() {
-        return Arrays.asList(storageMap.values().toArray(new Resume[0]));
     }
 
     @Override

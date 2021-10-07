@@ -8,11 +8,18 @@ import java.util.List;
 
 public class ListStorage extends AbstractStorage<Integer> {
 
-    private List<Resume> storageList = new ArrayList();
+    private List<Resume> storageList = new ArrayList<>();
 
     @Override
     protected Integer getSearchKey(String uuid) {
-        return storageList.indexOf(new Resume(uuid));
+        int indexForCheck = -1;
+        for (int i = 0; i < storageList.size(); i++) {
+            if (storageList.get(i).getUuid() == uuid) {
+                indexForCheck = i;
+                break;
+            }
+        }
+        return indexForCheck;
     }
 
     @Override
@@ -47,7 +54,7 @@ public class ListStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    public List<Resume> getAll() {
+    public List<Resume> getResumesAsList() {
         Resume[] resumesToArray = new Resume[storageList.size()];
         resumesToArray = storageList.toArray(resumesToArray);
         return Arrays.asList(resumesToArray);
