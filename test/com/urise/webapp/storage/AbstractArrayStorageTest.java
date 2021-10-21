@@ -17,15 +17,14 @@ public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
     public void getOverflowWithException() throws Exception {
         try {
             for (int i = storage.size() + 1; i <= STORAGE_LIMIT; i++) {
-                storage.save(new Resume(String.valueOf(i)));
+                storage.save(new Resume(String.valueOf("Name" + i)));
             }
         } catch (StorageException e) {
             fail("Переполнение произошло раньше времени");
         }
         System.out.println("Заполненность хранилища: " + storage.size() + " из " + STORAGE_LIMIT);
         System.out.println("Попытка реализовать переполнение и вызвать исключение...");
-        storage.save(new Resume("Резюме для переполнения"));
-
+        storage.save(new Resume("Overflow"));
     }
 
 }

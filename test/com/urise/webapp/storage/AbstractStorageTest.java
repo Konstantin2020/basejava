@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -73,9 +74,10 @@ public abstract class AbstractStorageTest {
     @Test
     public void getAllSorted() throws Exception {
         List<Resume> expected = new ArrayList<>();
-        expected.add(UUID_1.compareTo(UUID_2) > 0 ? resume2 : resume1);
-        expected.add(UUID_1.compareTo(UUID_2) > 0 ? resume1 : resume2);
+        expected.add(resume2);
         expected.add(resume3);
+        expected.add(resume1);
+        Collections.sort(expected);
         List<Resume> actual = storage.getAllSorted();
 //        Arrays.sort(actual);
         assertEquals(expected, actual);
