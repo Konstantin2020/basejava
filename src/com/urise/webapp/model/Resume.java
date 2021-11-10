@@ -15,8 +15,8 @@ public class Resume implements Comparable<Resume> {
 
     private final String fullName;
 
-    public Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
-    public Map<SectionType, AbstractSection> sections = new EnumMap<>(SectionType.class);
+    public Map<ContactType, Link> contacts = new EnumMap<>(ContactType.class);
+    public Map<SectionType, Section> sections = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -24,7 +24,7 @@ public class Resume implements Comparable<Resume> {
 
     public Resume(String uuid, String fullName) {
         Objects.requireNonNull(uuid, "uuid must not be null");
-        Objects.requireNonNull(fullName, "fullNmae must not be null");
+        Objects.requireNonNull(fullName, "fullName must not be null");
         this.uuid = uuid;
         this.fullName = fullName;
     }
@@ -37,20 +37,26 @@ public class Resume implements Comparable<Resume> {
         return fullName;
     }
 
+    public Map<ContactType, Link> getContacts() {
+        return contacts;
+    }
+
+    public Map<SectionType, Section> getSections() {
+        return sections;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Resume resume = (Resume) o;
-
-        if (!uuid.equals(resume.uuid)) return false;
-        return fullName.equals(resume.fullName);
+        return Objects.equals(fullName, resume.fullName);
     }
 
     @Override
     public int hashCode() {
         int result = uuid.hashCode();
+        result = 31 * result + fullName.hashCode();
         result = 31 * result + fullName.hashCode();
         return result;
     }

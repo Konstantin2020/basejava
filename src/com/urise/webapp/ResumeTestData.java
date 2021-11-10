@@ -2,6 +2,7 @@ package com.urise.webapp;
 
 import com.urise.webapp.model.*;
 
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,73 +10,88 @@ import java.util.Map;
 
 public class ResumeTestData {
 
+    public static Resume fillResume(String uuid, String fullname) {
+        Resume resume = new Resume(uuid, fullname);
+        fillContacts(resume);
+        fillSections(resume);
+        return resume;
+    }
+
     public static void main(String[] args) {
-        Resume resume = new Resume("Григорий Кислин");
-        System.out.println(resume.getFullName());
+        Resume resumeTest = new Resume("Григорий Кислин");
+        fillContacts(resumeTest);
+        fillSections(resumeTest);
+        System.out.println(resumeTest.getFullName());
+        printContacts(resumeTest);
+        printSections(resumeTest);
+    }
 
-        resume.contacts.put(ContactType.TELEPHONE, "+7(921) 855-0482");
-        resume.contacts.put(ContactType.SKYPE, "skype:grigory.kislin");
-        resume.contacts.put(ContactType.MAIL, "gkislin@yandex.ru");
-        resume.contacts.put(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
-        resume.contacts.put(ContactType.GITHUB, "https://github.com/gkislin");
-        resume.contacts.put(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
-        resume.contacts.put(ContactType.HOMEPAGE, "http://gkislin.ru/");
+    private static void fillContacts(Resume resume) {
+        resume.contacts.put(ContactType.PHONE, new Link("+7(812) 855-0482", ""));
+        resume.contacts.put(ContactType.MOBILE, new Link("+7(921) 855-1234", ""));
+        resume.contacts.put(ContactType.HOME_PHONE, new Link("+8(495) 123-1234", ""));
+        resume.contacts.put(ContactType.SKYPE, new Link("skype:grigory.kislin", "skype:grigory.kislin"));
+        resume.contacts.put(ContactType.MAIL, new Link("gkislin@yandex.ru", "mailto:gkislin@yandex.ru"));
+        resume.contacts.put(ContactType.LINKEDIN, new Link("Linkedin", "https://www.linkedin.com/in/gkislin"));
+        resume.contacts.put(ContactType.GITHUB, new Link("Github", "https://github.com/gkislin"));
+        resume.contacts.put(ContactType.STACKOVERFLOW, new Link("StackOverFlow", "https://stackoverflow.com/users/548473"));
+        resume.contacts.put(ContactType.HOMEPAGE, new Link("Homepage", "http://gkislin.ru/"));
 
-        for (Map.Entry<ContactType, String> entry : resume.contacts.entrySet()) {
+    }
+
+    private static void printContacts(Resume resume) {
+        for (Map.Entry<ContactType, Link> entry : resume.contacts.entrySet()) {
             System.out.println(entry.getKey().getTitle());
             System.out.println(entry.getValue());
         }
-
         System.out.println(" ");
+    }
 
+    private static void fillSections(Resume resume) {
         resume.sections.put(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
         resume.sections.put(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
         resume.sections.put(SectionType.ACHIEVEMENT, writeListSectionAchieve());
         resume.sections.put(SectionType.QUALIFICATIONS, writeListSectionQualif());
-        resume.sections.put(SectionType.EXPERIENCE, new TextSection("Java Online Projects\n" +
-                "10/2013 - Сейчас\tАвтор проекта.\n" +
-                "Создание, организация и проведение Java онлайн проектов и стажировок.\n" +
-                "Wrike\n" +
-                "10/2014 - 01/2016\tСтарший разработчик (backend)\n" +
-                "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.\n" +
-                "RIT Center\n" +
-                "04/2012 - 10/2014\tJava архитектор\n" +
-                "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python\n" +
-                "Luxoft (Deutsche Bank)\n" +
-                "12/2010 - 04/2012\tВедущий программист\n" +
-                "Участие в проекте Deutsche Bank CRM (WebLogic, Hibernate, Spring, Spring MVC, SmartGWT, GWT, Jasper, Oracle). Реализация клиентской и серверной части CRM. Реализация RIA-приложения для администрирования, мониторинга и анализа результатов в области алгоритмического трейдинга. JPA, Spring, Spring-MVC, GWT, ExtGWT (GXT), Highstock, Commet, HTML5.\n" +
-                "Yota\n" +
-                "06/2008 - 12/2010\tВедущий специалист\n" +
-                "Дизайн и имплементация Java EE фреймворка для отдела \"Платежные Системы\" (GlassFish v2.1, v3, OC4J, EJB3, JAX-WS RI 2.1, Servlet 2.4, JSP, JMX, JMS, Maven2). Реализация администрирования, статистики и мониторинга фреймворка. Разработка online JMX клиента (Python/ Jython, Django, ExtJS)\n" +
-                "Enkata\n" +
-                "03/2007 - 06/2008\tРазработчик ПО\n" +
-                "Реализация клиентской (Eclipse RCP) и серверной (JBoss 4.2, Hibernate 3.0, Tomcat, JMS) частей кластерного J2EE приложения (OLAP, Data mining).\n" +
-                "Siemens AG\n" +
-                "01/2005 - 02/2007\tРазработчик ПО\n" +
-                "Разработка информационной модели, проектирование интерфейсов, реализация и отладка ПО на мобильной IN платформе Siemens @vantage (Java, Unix).\n" +
-                "Alcatel\n" +
-                "09/1997 - 01/2005\tИнженер по аппаратному и программному тестированию\n" +
-                "Тестирование, отладка, внедрение ПО цифровой телефонной станции Alcatel 1000 S12 (CHILL, ASM)."));
+        resume.sections.put(SectionType.EXPERIENCE, writeListSectionExperience());
+        resume.sections.put(SectionType.EDUCATION, writeListSectionEducation());
+    }
 
-        resume.sections.put(SectionType.EDUCATION, new TextSection("Coursera\n" +
-                "03/2013 - 05/2013\t\"Functional Programming Principles in Scala\" by Martin Odersky\n" +
-                "Luxoft\n" +
-                "03/2011 - 04/2011\tКурс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"\n" +
-                "Siemens AG\n" +
-                "01/2005 - 04/2005\t3 месяца обучения мобильным IN сетям (Берлин)\n" +
-                "Alcatel\n" +
-                "09/1997 - 03/1998\t6 месяцев обучения цифровым телефонным сетям (Москва)\n" +
-                "Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики\n" +
-                "09/1993 - 07/1996\tАспирантура (программист С, С++)\n" +
-                "09/1987 - 07/1993\tИнженер (программист Fortran, C)\n" +
-                "Заочная физико-техническая школа при МФТИ\n" +
-                "09/1984 - 06/1987\tЗакончил с отличием"));
+    private static OrganizationSection writeListSectionExperience() {
+        List<Position> positions1 = new ArrayList<>();
 
-        for (Map.Entry<SectionType, AbstractSection> entry : resume.sections.entrySet()) {
+        positions1.add(new Position(YearMonth.parse("2013-10"), null, "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок."));
+        Organization work1 = new Organization("Java Online Projects", "", positions1);
+
+        List<Position> positions2 = new ArrayList<>();
+        positions2.add(new Position(YearMonth.parse("2014-10"), YearMonth.parse("2016-01"), "Старший разработчик (backend).", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."));
+        Organization work2 = new Organization("Wrike", "", positions2);
+
+        List<Organization> organizationList = new ArrayList<>();
+        organizationList.add(work1);
+        organizationList.add(work2);
+        return new OrganizationSection(organizationList);
+    }
+
+    private static OrganizationSection writeListSectionEducation() {
+        List<Position> positions = new ArrayList<>();
+        positions.add(new Position(YearMonth.parse("1987-09"), YearMonth.parse("1993-07"), "Аспирантура (программист С, С++)", null));
+        positions.add(new Position(YearMonth.parse("1993-09"), YearMonth.parse("1996-07"), "Инженер (программист Fortran, C)", null));
+
+        Organization edu = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "", positions);
+
+        List<Organization> organizationList = new ArrayList<>();
+        organizationList.add(edu);
+
+        return new OrganizationSection(organizationList);
+    }
+
+    public static void printSections(Resume resume) {
+        for (Map.Entry<SectionType, Section> entry : resume.sections.entrySet()) {
             System.out.println(entry.getKey().getTitle());
             System.out.println(entry.getValue().toString());
             System.out.println(" ");
         }
+
     }
 
     private static ListSection writeListSectionAchieve() {
@@ -109,9 +125,8 @@ public class ResumeTestData {
         return createListSection(lines);
     }
 
-    private static ListSection createListSection(List<String> lines) {
-        ListSection lastListSection = new ListSection();
-        lastListSection.setLines(lines);
+    private static ListSection createListSection(List<String> items) {
+        ListSection lastListSection = new ListSection(items);
         return lastListSection;
     }
 }

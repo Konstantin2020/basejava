@@ -4,6 +4,7 @@ import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.Resume;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
@@ -20,7 +21,11 @@ public abstract class AbstractStorage<SKey> implements Storage {
             LOG.warning("Resume " + resume.getUuid() + " already exist");
             throw new ExistStorageException(resume.getUuid());
         }
-        saveToStorage(resume, searchKey);
+        try {
+            saveToStorage(resume, searchKey);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         System.out.println("Save сохраняет резюме " + resume.getUuid() + ".");
     }
 
@@ -62,7 +67,7 @@ public abstract class AbstractStorage<SKey> implements Storage {
 
     protected abstract SKey getSearchKey(String uuid);
 
-    protected abstract void saveToStorage(Resume resume, SKey searchKey);
+    protected abstract void saveToStorage(Resume resume, SKey searchKey) throws IOException;
 
     protected abstract Resume getFromStorage(SKey searchKey);
 
