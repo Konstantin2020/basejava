@@ -2,7 +2,7 @@ package com.urise.webapp;
 
 import com.urise.webapp.model.*;
 
-import java.time.YearMonth;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,13 +57,13 @@ public class ResumeTestData {
     }
 
     private static OrganizationSection writeListSectionExperience() {
-        List<Position> positions1 = new ArrayList<>();
+        List<Organization.Position> positions1 = new ArrayList<>();
 
-        positions1.add(new Position(YearMonth.parse("2013-10"), null, "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок."));
+        positions1.add(new Organization.Position(2013, Month.OCTOBER, "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок."));
         Organization work1 = new Organization("Java Online Projects", "", positions1);
 
-        List<Position> positions2 = new ArrayList<>();
-        positions2.add(new Position(YearMonth.parse("2014-10"), YearMonth.parse("2016-01"), "Старший разработчик (backend).", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."));
+        List<Organization.Position> positions2 = new ArrayList<>();
+        positions2.add(new Organization.Position(2014, Month.JANUARY, "Старший разработчик (backend).", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."));
         Organization work2 = new Organization("Wrike", "", positions2);
 
         List<Organization> organizationList = new ArrayList<>();
@@ -73,9 +73,9 @@ public class ResumeTestData {
     }
 
     private static OrganizationSection writeListSectionEducation() {
-        List<Position> positions = new ArrayList<>();
-        positions.add(new Position(YearMonth.parse("1987-09"), YearMonth.parse("1993-07"), "Аспирантура (программист С, С++)", null));
-        positions.add(new Position(YearMonth.parse("1993-09"), YearMonth.parse("1996-07"), "Инженер (программист Fortran, C)", null));
+        List<Organization.Position> positions = new ArrayList<>();
+        positions.add(new Organization.Position(1987, Month.SEPTEMBER, 1993, Month.JULY, "Аспирантура (программист С, С++)", null));
+        positions.add(new Organization.Position(1993, Month.SEPTEMBER, 1996, Month.JULY, "Инженер (программист Fortran, C)", null));
 
         Organization edu = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "", positions);
 
@@ -86,7 +86,7 @@ public class ResumeTestData {
     }
 
     public static void printSections(Resume resume) {
-        for (Map.Entry<SectionType, Section> entry : resume.sections.entrySet()) {
+        for (Map.Entry<SectionType, AbstractSection> entry : resume.sections.entrySet()) {
             System.out.println(entry.getKey().getTitle());
             System.out.println(entry.getValue().toString());
             System.out.println(" ");

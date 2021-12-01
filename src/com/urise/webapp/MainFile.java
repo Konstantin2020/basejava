@@ -25,8 +25,8 @@ public class MainFile {
         }
 
         File frf = new File("..\\basejava\\src\\com\\urise\\webapp");
-        System.out.println("Обработка в рекурсивном методе");
-        recurseFind(frf);
+        System.out.println("Обработка в рекурсивном методе с курса");
+        printDirectory(frf, "");
 
 
         try (FileInputStream fis = new FileInputStream(filePath)) {
@@ -36,19 +36,16 @@ public class MainFile {
         }
     }
 
-    public static void recurseFind(File forRecurseFile) {
-        if (forRecurseFile.isDirectory()) {
-            String[] list = forRecurseFile.list();
-            if (list != null) {
-                for (String name : list) {
-                    if (name.endsWith(".java")) {
-                        System.out.println("Файл: " + name);
-                    } else {
-                        System.out.println("Папка: " + name);
-                    }
-                    recurseFind(new File(forRecurseFile + "\\" + name));
-                }
+    //реализация на курсе
+    public static void printDirectory(File dir, String space) {
+        System.out.println(space + dir.getName());
+        File[] files = dir.listFiles();
+        if (dir.isDirectory() && files != null) {
+            for (File file : files) {
+                printDirectory(file, space + "\u0020");
             }
+
         }
     }
 }
+

@@ -18,7 +18,7 @@ public class TestSingleton {
     public static void main(String[] args) {
         TestSingleton.getInstance().toString();
         Singleton instance = Singleton.valueOf("INSTANCE");
-        System.out.println(instance.ordinal());
+        System.out.println(instance.ordinal());//ordinal - это порядковый номер
 
 
         for (SectionType type : SectionType.values()) {
