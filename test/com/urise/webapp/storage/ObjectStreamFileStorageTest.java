@@ -1,5 +1,7 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.storage.strategy.ObjectStreamStrategy;
+
 public class ObjectStreamFileStorageTest extends AbstractStorageTest {
 
     public ObjectStreamFileStorageTest() {
