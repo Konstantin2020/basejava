@@ -11,8 +11,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class FileStorage extends AbstractStorage<File> {
-    private File directory;
-    private SerializeStrategy strategy;
+    private final File directory;
+    private final SerializeStrategy strategy;
 
     protected FileStorage(File directory, SerializeStrategy strategy) {
         Objects.requireNonNull(directory, "directory must not be null");
@@ -26,24 +26,16 @@ public class FileStorage extends AbstractStorage<File> {
         this.strategy = strategy;
     }
 
-    private File[] createArrayFiles() {
-        File[] files = directory.listFiles();
-        if (files == null) {
-            throw new StorageException("Directory read error", null);
-        }
-        return files;
-    }
-
     @Override
     public void clear() {
-        for (File file : createArrayFiles()) {
+        for (File file : createFilesArray()) {
             deleteFromStorage(file);
         }
     }
 
     @Override
     public int size() {
-        return createArrayFiles().length;
+        return createFilesArray().length;
     }
 
     @Override
@@ -93,6 +85,16 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public List<Resume> getResumesAsList() {
-        return Arrays.stream(createArrayFiles()).map(file -> getFromStorage(file)).collect(Collectors.toList());
+        return Arrays.stream(createFilesArray())
+                .map(this::getFromStorage)
+                .collect(Collectors.toList());
+    }
+
+    private File[] createFilesArray() {
+        File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("Directory read error", null);
+        }
+        return files;
     }
 }

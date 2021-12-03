@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PathStorage extends AbstractStorage<Path> {
-    private Path directory;
-    private SerializeStrategy strategy;
+    private final Path directory;
+    private final SerializeStrategy strategy;
 
     protected PathStorage(String dir, SerializeStrategy strategy) {
         directory = Paths.get(dir);
@@ -28,22 +28,14 @@ public class PathStorage extends AbstractStorage<Path> {
         }
     }
 
-    private Stream<Path> createStreamPath() {
-        try {
-            return Files.list(directory);
-        } catch (IOException e) {
-            throw new StorageException("Directory read error", null);
-        }
-    }
-
     @Override
     public void clear() {
-        createStreamPath().forEach(this::deleteFromStorage);
+        createPathsStream().forEach(this::deleteFromStorage);
     }
 
     @Override
     public int size() {
-        return (int) createStreamPath().count();
+        return (int) createPathsStream().count();
     }
 
     @Override
@@ -95,6 +87,16 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     public List<Resume> getResumesAsList() {
-        return createStreamPath().map(path -> getFromStorage(path)).collect(Collectors.toList());
+        return createPathsStream()
+                .map(this::getFromStorage)
+                .collect(Collectors.toList());
+    }
+
+    private Stream<Path> createPathsStream() {
+        try {
+            return Files.list(directory);
+        } catch (IOException e) {
+            throw new StorageException("Directory read error", null);
+        }
     }
 }
