@@ -6,7 +6,11 @@ import java.util.Objects;
 
 public class ListSection extends AbstractSection {
     private static final long serialVersionUID = 1L;
+
     private List<String> items;
+
+    public ListSection() {
+    }
 
     public ListSection(String... items) {
         this(Arrays.asList(items));
@@ -28,7 +32,6 @@ public class ListSection extends AbstractSection {
             sb.append("-").append(line).append('\n');
         }
         return sb.toString();
-//      return items.toString();
     }
 
     @Override

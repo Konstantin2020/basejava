@@ -9,7 +9,6 @@ public class MapResumeStorage extends AbstractMapStorage<Resume> {
         return storageMap.get(uuid);
     }
 
-
     @Override
     protected Resume getFromStorage(Resume searchKey) {
         return searchKey;

@@ -15,6 +15,7 @@ public class FileStorage extends AbstractStorage<File> {
     private final SerializeStrategy strategy;
 
     protected FileStorage(File directory, SerializeStrategy strategy) {
+        this.strategy = strategy;
         Objects.requireNonNull(directory, "directory must not be null");
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not directory");
@@ -23,7 +24,6 @@ public class FileStorage extends AbstractStorage<File> {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not readable/writable directory");
         }
         this.directory = directory;
-        this.strategy = strategy;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class FileStorage extends AbstractStorage<File> {
     private File[] createFilesArray() {
         File[] files = directory.listFiles();
         if (files == null) {
-            throw new StorageException("Directory read error", null);
+            throw new StorageException("Directory read error");
         }
         return files;
     }

@@ -27,9 +27,9 @@ public class ResumeTestData {
     }
 
     private static void fillContacts(Resume resume) {
-        resume.contacts.put(ContactType.PHONE, new Link("+7(812) 855-0482", ""));
-        resume.contacts.put(ContactType.MOBILE, new Link("+7(921) 855-1234", ""));
-        resume.contacts.put(ContactType.HOME_PHONE, new Link("+8(495) 123-1234", ""));
+        resume.contacts.put(ContactType.PHONE, new Link("+7(812) 855-0482", null));
+        resume.contacts.put(ContactType.MOBILE, new Link("+7(921) 855-1234", null));
+        resume.contacts.put(ContactType.HOME_PHONE, new Link("+8(495) 123-1234", null));
         resume.contacts.put(ContactType.SKYPE, new Link("skype:grigory.kislin", "skype:grigory.kislin"));
         resume.contacts.put(ContactType.MAIL, new Link("gkislin@yandex.ru", "mailto:gkislin@yandex.ru"));
         resume.contacts.put(ContactType.LINKEDIN, new Link("Linkedin", "https://www.linkedin.com/in/gkislin"));
@@ -60,11 +60,11 @@ public class ResumeTestData {
         List<Organization.Position> positions1 = new ArrayList<>();
 
         positions1.add(new Organization.Position(2013, Month.OCTOBER, "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок."));
-        Organization work1 = new Organization("Java Online Projects", "", positions1);
+        Organization work1 = new Organization("Java Online Projects", null, positions1);
 
         List<Organization.Position> positions2 = new ArrayList<>();
         positions2.add(new Organization.Position(2014, Month.JANUARY, "Старший разработчик (backend).", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."));
-        Organization work2 = new Organization("Wrike", "", positions2);
+        Organization work2 = new Organization("Wrike", null, positions2);
 
         List<Organization> organizationList = new ArrayList<>();
         organizationList.add(work1);
@@ -77,7 +77,7 @@ public class ResumeTestData {
         positions.add(new Organization.Position(1987, Month.SEPTEMBER, 1993, Month.JULY, "Аспирантура (программист С, С++)", null));
         positions.add(new Organization.Position(1993, Month.SEPTEMBER, 1996, Month.JULY, "Инженер (программист Fortran, C)", null));
 
-        Organization edu = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "", positions);
+        Organization edu = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", null, positions);
 
         List<Organization> organizationList = new ArrayList<>();
         organizationList.add(edu);

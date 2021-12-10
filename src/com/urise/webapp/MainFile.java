@@ -25,6 +25,7 @@ public class MainFile {
         }
 
         File frf = new File("..\\basejava\\src\\com\\urise\\webapp");
+        //File frf = new File("C:\\");
         System.out.println("Обработка в рекурсивном методе с курса");
         printDirectory(frf, "");
 
@@ -38,11 +39,16 @@ public class MainFile {
 
     //реализация на курсе
     public static void printDirectory(File dir, String space) {
-        System.out.println(space + dir.getName());
         File[] files = dir.listFiles();
-        if (dir.isDirectory() && files != null) {
+        if (files != null) {
             for (File file : files) {
-                printDirectory(file, space + "\u0020");
+                if (file.isFile()) {
+                    System.out.println(space + "F:" + file.getName());
+                } else if (file.isDirectory()) {
+                    System.out.println(space + "D:" + file.getName());
+                    printDirectory(file, space + "\u0020");
+                }
+
             }
 
         }

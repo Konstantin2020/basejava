@@ -20,9 +20,9 @@ public class PathStorage extends AbstractStorage<Path> {
     private final SerializeStrategy strategy;
 
     protected PathStorage(String dir, SerializeStrategy strategy) {
-        directory = Paths.get(dir);
+        Objects.requireNonNull(dir, "directory must not be null");
         this.strategy = strategy;
-        Objects.requireNonNull(directory, "directory must not be null");
+        directory = Paths.get(dir);
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
             throw new IllegalArgumentException(dir + " is not directory or is not writable");
         }
@@ -48,7 +48,7 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             strategy.doWrite(resume, new BufferedOutputStream(Files.newOutputStream(searchKey)));
         } catch (IOException e) {
-            throw new StorageException("Path write error " + searchKey.toString(), resume.getUuid(), e);
+            throw new StorageException("Path write error " + searchKey, resume.getUuid(), e);
         }
     }
 
@@ -62,7 +62,7 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             Files.createFile(searchKey);
         } catch (IOException e) {
-            throw new StorageException("Couldn't create Path " + searchKey.toString(), resume.getUuid(), e);
+            throw new StorageException("Couldn't create Path " + searchKey, resume.getUuid(), e);
         }
         updateToStorage(resume, searchKey);
     }
@@ -96,7 +96,7 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             return Files.list(directory);
         } catch (IOException e) {
-            throw new StorageException("Directory read error", null);
+            throw new StorageException("Directory read error", null, e);
         }
     }
 }
