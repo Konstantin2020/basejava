@@ -1,17 +1,12 @@
 package com.urise.webapp.storage.strategy;
 
-import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.*;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class DataStreamStrategy implements SerializeStrategy {
-    Resume resume;
 
     @Override
     public void doWrite(Resume resume, OutputStream os) throws IOException {
@@ -19,23 +14,28 @@ public class DataStreamStrategy implements SerializeStrategy {
             write(dos, resume.getUuid());
             write(dos, resume.getFullName());
             Map<ContactType, Link> contacts = resume.getContacts();
-            writeInt(dos, contacts.size());
-            contacts.forEach((key, value) -> {
-                write(dos, key.toString());
-                writeLink(dos, value);
+            writeWithException(dos, contacts.entrySet(), s -> {
+                ContactType ct = s.getKey();
+                write(dos, ct.toString());
+                writeLink(dos, s.getValue());
             });
             Map<SectionType, AbstractSection> sections = resume.getSections();
-            writeInt(dos, sections.size());
-            sections.forEach((key, as) -> {
-                write(dos, key.toString());
-                Class<? extends AbstractSection> abstractSection = as.getClass();
-                write(dos, String.valueOf(abstractSection));
-                if (abstractSection.equals(TextSection.class)) {
-                    writeTextSection(dos, (TextSection) as);
-                } else if (abstractSection.equals(ListSection.class)) {
-                    writeListSection(dos, (ListSection) as);
-                } else if (abstractSection.equals(OrganizationSection.class)) {
-                    writeOrganizationSection(dos, (OrganizationSection) as);
+            writeWithException(dos, sections.entrySet(), s -> {
+                SectionType st = s.getKey();
+                write(dos, st.toString());
+                AbstractSection as = s.getValue();
+                switch (st) {
+                    case PERSONAL:
+                    case OBJECTIVE:
+                        writeTextSection(dos, (TextSection) as);
+                        break;
+                    case EDUCATION:
+                    case EXPERIENCE:
+                        writeOrganizationSection(dos, (OrganizationSection) as);
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        writeListSection(dos, (ListSection) as);
                 }
             });
         }
@@ -43,148 +43,137 @@ public class DataStreamStrategy implements SerializeStrategy {
 
     @Override
     public Resume doRead(InputStream is) throws IOException {
+        Resume resume;
         try (DataInputStream dis = new DataInputStream(is)) {
             String uuid = read(dis);
             String fullName = read(dis);
             resume = new Resume(uuid, fullName);
-            int sizeContactType = readInt(dis);
-            for (int i = 0; i < sizeContactType; i++) {
-                resume.addContact(ContactType.valueOf(dis.readUTF()), readLink(dis));
-            }
-            int sizeSections = readInt(dis);
-            for (int i = 0; i < sizeSections; i++) {
-                SectionType sectionType = SectionType.valueOf(dis.readUTF());
-                String abstractSectionName = dis.readUTF();
-                if (abstractSectionName.equals(TextSection.class.toString())) {
-                    readTextSection(dis, sectionType);
-                } else if (abstractSectionName.equals(ListSection.class.toString())) {
-                    readListSection(dis, sectionType);
-                } else if (abstractSectionName.equals(OrganizationSection.class.toString())) {
-                    readOrganizationSection(dis, sectionType);
-                }
-            }
-            return resume;
+            readWithException(dis, () -> resume.addContact(ContactType.valueOf(read(dis)), readLink(dis)));
+            readWithException(dis, () -> {
+                        SectionType sectionType = SectionType.valueOf(read(dis));
+                        switch (sectionType) {
+                            case PERSONAL:
+                            case OBJECTIVE:
+                                readTextSection(dis, resume, sectionType);
+                                break;
+                            case EDUCATION:
+                            case EXPERIENCE:
+                                readOrganizationSection(dis, resume, sectionType);
+                                break;
+                            case ACHIEVEMENT:
+                            case QUALIFICATIONS:
+                                readListSection(dis, resume, sectionType);
+                                break;
+                        }
+                    }
+            );
+        }
+        return resume;
+    }
+
+    private void write(DataOutputStream dos, String str) throws IOException {
+        if (str != null) {
+            dos.writeUTF(str);
+        } else {
+            dos.writeUTF("");
         }
     }
 
-    private void write(DataOutputStream dos, String str) {
-        try {
-            if (str != null) {
-                dos.writeUTF(str);
-            } else {
-                dos.writeUTF("");
-            }
-        } catch (IOException e) {
-            throw new StorageException("Data stream write error", e);
-        }
+    private String read(DataInputStream dis) throws IOException {
+        String str = dis.readUTF();
+        return str.equals("") ? null : str;
     }
 
-    private String read(DataInputStream dis) {
-        try {
-            String str = dis.readUTF();
-            return str.equals("") ? null : str;
-        } catch (IOException e) {
-            throw new StorageException("Data stream read error", e);
-        }
-    }
-
-    private void writeInt(DataOutputStream dos, Integer size) {
-        try {
-            dos.writeInt(size);
-        } catch (IOException e) {
-            throw new StorageException("Data stream write error for int", e);
-        }
-    }
-
-    private int readInt(DataInputStream dis) {
-        try {
-            return dis.readInt();
-        } catch (IOException e) {
-            throw new StorageException("Data stream read error for int", e);
-        }
-    }
-
-    private void writeLink(DataOutputStream dos, Link link) {
+    private void writeLink(DataOutputStream dos, Link link) throws IOException {
         write(dos, link.getName());
         write(dos, link.getUrl());
     }
 
-    private Link readLink(DataInputStream dis) {
+    private Link readLink(DataInputStream dis) throws IOException {
         return new Link(read(dis), read(dis));
     }
 
-    private void writeTextSection(DataOutputStream dos, TextSection as) {
+    private void writeTextSection(DataOutputStream dos, TextSection as) throws IOException {
         write(dos, (as.getContent()));
     }
 
-    private void readTextSection(DataInputStream dis, SectionType sectionType) {
+    private void readTextSection(DataInputStream dis, Resume resume, SectionType sectionType) throws IOException {
         resume.addSection(sectionType, new TextSection(read(dis)));
     }
 
-    private void writeListSection(DataOutputStream dos, ListSection as) {
+    private void writeListSection(DataOutputStream dos, ListSection as) throws IOException {
         List<String> list = new ArrayList<>(as.getItems());
-        writeInt(dos, list.size());
-        list.forEach(str ->
-                write(dos, str));
+        writeWithException(dos, list, v -> write(dos, v));
     }
 
-    private void readListSection(DataInputStream dis, SectionType sectionType) {
+    private void readListSection(DataInputStream dis, Resume resume, SectionType sectionType) throws IOException {
         List<String> list = new ArrayList<>();
-        int size = readInt(dis);
-        for (int i = 0; i < size; i++) {
-            list.add(read(dis));
-        }
+        readWithException(dis, () -> list.add(read(dis)));
         resume.addSection(sectionType, new ListSection(list));
     }
 
-
-    private void writeOrganizationSection(DataOutputStream dos, OrganizationSection as) {
+    private void writeOrganizationSection(DataOutputStream dos, OrganizationSection as) throws IOException {
         List<Organization> list = new ArrayList<>(as.getOrganizations());
-        writeInt(dos, list.size());
-        list.forEach(organization ->
-                writeOrganization(dos, organization));
+        writeWithException(dos, list, v -> writeOrganization(dos, v));
     }
 
-    private void readOrganizationSection(DataInputStream dis, SectionType sectionType) {
+    private void readOrganizationSection(DataInputStream dis, Resume resume, SectionType sectionType) throws IOException {
         List<Organization> list = new ArrayList<>();
-        int size = readInt(dis);
-        for (int i = 0; i < size; i++) {
-            list.add(readOrganization(dis));
-        }
+        readWithException(dis, () -> list.add(readOrganization(dis)));
         resume.addSection(sectionType, new OrganizationSection(list));
     }
 
-    private void writeOrganization(DataOutputStream dos, Organization org) {
+    private void writeOrganization(DataOutputStream dos, Organization org) throws IOException {
         writeLink(dos, org.getHomePage());
         List<Organization.Position> list = new ArrayList<>(org.getPositions());
-        writeInt(dos, list.size());
-        list.forEach(position ->
-                writePosition(dos, position));
-
+        writeWithException(dos, list, v -> writePosition(dos, v));
     }
 
-    private Organization readOrganization(DataInputStream dis) {
-        Link homePage = readLink(dis);
+    private Organization readOrganization(DataInputStream dis) throws IOException {
+        Link homePage = new Link(read(dis), read(dis));
         List<Organization.Position> list = new ArrayList<>();
-        int size = readInt(dis);
-        for (int i = 0; i < size; i++) {
-            list.add(readPosition(dis));
-        }
+        readWithException(dis, () -> list.add(readPosition(dis)));
         return new Organization(homePage, list);
     }
 
-    private void writePosition(DataOutputStream dos, Organization.Position pos) {
+    private void writePosition(DataOutputStream dos, Organization.Position pos) throws IOException {
         write(dos, pos.getStartDate().toString());
         write(dos, pos.getEndDate().toString());
         write(dos, pos.getTitle());
         write(dos, pos.getDescription());
     }
 
-    private Organization.Position readPosition(DataInputStream dis) {
+    private Organization.Position readPosition(DataInputStream dis) throws IOException {
         LocalDate startDate = LocalDate.parse(Objects.requireNonNull(read(dis)));
         LocalDate endDate = LocalDate.parse(Objects.requireNonNull(read(dis)));
         String title = read(dis);
         String description = read(dis);
         return new Organization.Position(startDate, endDate, title, description);
+    }
+
+    //https://skillbox.ru/media/base/funktsionalnye_interfeysy_i_lyambda_vyrazheniya_v_java/
+    //https://metanit.com/java/tutorial/9.1.php
+    private interface WriteElementInterface<T> {
+        void write(T t) throws IOException;
+    }
+
+    //https://metanit.com/java/tutorial/9.2.php
+    //https://coderlessons.com/tutorials/java-tekhnologii/izuchite-paket-java-util/klass-java-util-enummap
+    private <T> void writeWithException(DataOutputStream dos, Collection<T> collection, WriteElementInterface<T> writeElem) throws IOException {
+        dos.writeInt(collection.size());
+        for (T t : collection) {
+            writeElem.write(t);
+        }
+    }
+
+    private interface ReadElementInterface {
+        void read() throws IOException;
+    }
+
+    private void readWithException(DataInputStream dis, ReadElementInterface readElem) throws IOException {
+        int size = dis.readInt();
+        for (int i = 0; i < size; i++) {
+            readElem.read();
+        }
     }
 }
