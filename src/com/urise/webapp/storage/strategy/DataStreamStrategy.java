@@ -1,11 +1,14 @@
 package com.urise.webapp.storage.strategy;
 
-import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.*;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.util.*;
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class DataStreamStrategy implements SerializeStrategy {
 
@@ -74,7 +77,7 @@ public class DataStreamStrategy implements SerializeStrategy {
         dos.writeUTF(str != null ? str : "");
     }
 
-    private String readNullSafely(DataInputStream dis) throws IOException {
+    private String readNullIfEmpty(DataInputStream dis) throws IOException {
         String str = dis.readUTF();
         return str.equals("") ? null : str;
     }
@@ -85,20 +88,16 @@ public class DataStreamStrategy implements SerializeStrategy {
     }
 
     private Link readLink(DataInputStream dis) throws IOException {
-        return new Link(dis.readUTF(), readNullSafely(dis));
+        return new Link(dis.readUTF(), readNullIfEmpty(dis));
     }
 
     private void writeListSection(DataOutputStream dos, ListSection as) throws IOException {
         List<String> list = new ArrayList<>(as.getItems());
+        int size = list.size();
         dos.writeInt(list.size());
-        list.forEach(str ->
-        {
-            try {
-                dos.writeUTF(str);
-            } catch (IOException e) {
-                throw new StorageException("Data stream write ListSection error", e);
-            }
-        });
+        for (String s : list) {
+            dos.writeUTF(s);
+        }
     }
 
     private void readListSection(DataInputStream dis, Resume resume, SectionType sectionType) throws IOException {
@@ -112,15 +111,11 @@ public class DataStreamStrategy implements SerializeStrategy {
 
     private void writeOrganizationSection(DataOutputStream dos, OrganizationSection as) throws IOException {
         List<Organization> list = new ArrayList<>(as.getOrganizations());
+        int size = list.size();
         dos.writeInt(list.size());
-        list.forEach(organization ->
-        {
-            try {
-                writeOrganization(dos, organization);
-            } catch (IOException e) {
-                throw new StorageException("Data stream write OrganizationSection error", e);
-            }
-        });
+        for (Organization organization : list) {
+            writeOrganization(dos, organization);
+        }
     }
 
     private void readOrganizationSection(DataInputStream dis, Resume resume, SectionType sectionType) throws IOException {
@@ -135,16 +130,11 @@ public class DataStreamStrategy implements SerializeStrategy {
     private void writeOrganization(DataOutputStream dos, Organization org) throws IOException {
         writeLink(dos, org.getHomePage());
         List<Organization.Position> list = new ArrayList<>(org.getPositions());
+        int size = list.size();
         dos.writeInt(list.size());
-        list.forEach(position ->
-        {
-            try {
-                writePosition(dos, position);
-            } catch (IOException e) {
-                throw new StorageException("Data stream write Organization error", e);
-            }
-        });
-
+        for (Organization.Position position : list) {
+            writePosition(dos, position);
+        }
     }
 
     private Organization readOrganization(DataInputStream dis) throws IOException {
@@ -159,18 +149,31 @@ public class DataStreamStrategy implements SerializeStrategy {
 
 
     private void writePosition(DataOutputStream dos, Organization.Position pos) throws IOException {
-        dos.writeUTF(pos.getStartDate().toString());
-        dos.writeUTF(pos.getEndDate().toString());
+        writeLocalDate(dos, pos.getStartDate());
+        writeLocalDate(dos, pos.getEndDate());
         dos.writeUTF(pos.getTitle());
         writeNullSafely(dos, pos.getDescription());
     }
 
     private Organization.Position readPosition(DataInputStream dis) throws IOException {
-        LocalDate startDate = LocalDate.parse(Objects.requireNonNull(dis.readUTF()));
-        LocalDate endDate = LocalDate.parse(Objects.requireNonNull(dis.readUTF()));
+        LocalDate startDate = readLocalDate(dis);
+        LocalDate endDate = readLocalDate(dis);
         String title = dis.readUTF();
-        String description = readNullSafely(dis);
+        String description = readNullIfEmpty(dis);
         return new Organization.Position(startDate, endDate, title, description);
+    }
+
+    private void writeLocalDate(DataOutputStream dos, LocalDate ld) throws IOException {
+        dos.writeInt(ld.getYear());
+        dos.writeUTF(String.valueOf(ld.getMonth()));
+        dos.writeInt(1);
+    }
+
+    private LocalDate readLocalDate(DataInputStream dis) throws IOException {
+        int year = dis.readInt();
+        Month month = Month.valueOf(dis.readUTF());
+        int dayOfMonth = dis.readInt();
+        return LocalDate.of(year, month, dayOfMonth);
     }
 
     //https://skillbox.ru/media/base/funktsionalnye_interfeysy_i_lyambda_vyrazheniya_v_java/
