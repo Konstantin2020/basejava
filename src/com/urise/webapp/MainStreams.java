@@ -42,7 +42,7 @@ public class MainStreams {
         System.out.println("Сумма элементов: " + totalSum);
         return integers
                 .stream()
-                .filter(x -> ((totalSum % 2 != 0) && (x % 2 == 0)) || ((totalSum % 2 == 0) && !(x % 2 == 0)))
+                .filter(x -> ((totalSum % 2 != 0) && (x % 2 == 0)) || ((totalSum % 2 == 0) && (x % 2 != 0)))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
