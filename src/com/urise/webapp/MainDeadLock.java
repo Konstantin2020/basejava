@@ -17,10 +17,12 @@ public class MainDeadLock {
             System.out.println("Thread " + threadName + " locked " + r0.getFullName());
             try {
                 Thread.sleep(300);
+//                r0.wait(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             System.out.println("Thread " + threadName + " is waiting for the resume to be unlocked by another thread " + r1.getFullName());
+  //         r0.notifyAll();
             synchronized (r1) {
                 System.out.println("Thread " + threadName + " locked " + r1.getFullName());
             }
