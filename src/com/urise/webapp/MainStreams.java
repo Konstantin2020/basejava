@@ -31,7 +31,10 @@ public class MainStreams {
             System.out.print(i + " ");
         }
         System.out.println(" ");
-        return Arrays.stream(values).distinct().sorted().reduce(0, (result, element) -> result * 10 + element);
+        return Arrays.stream(values)
+                .distinct()
+                .sorted()
+                .reduce(0, (result, element) -> result * 10 + element);
     }
 
     // реализация oddOrEven через через Streams
