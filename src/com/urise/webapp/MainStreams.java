@@ -46,7 +46,8 @@ public class MainStreams {
         return integers
                 .stream()
 // до оптимизации Idea .filter(x -> ((totalSum % 2 != 0) ? (x % 2 == 0) : (x % 2 != 0)))
-                .filter(x -> ((totalSum % 2 != 0) == (x % 2 == 0)))
+// после оптимизации Idea .filter(x -> ((totalSum % 2 != 0) == (x % 2 == 0)))
+                .filter(x -> ((totalSum % 2 != x % 2)))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
