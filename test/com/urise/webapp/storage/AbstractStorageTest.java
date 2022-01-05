@@ -1,6 +1,6 @@
 package com.urise.webapp.storage;
 
-import com.urise.webapp.ResumeTestData;
+import com.urise.webapp.Config;
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.Resume;
@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractStorageTest {
-    protected static final File STORAGE_DIR = new File("C:\\\\projects\\\\storage");
+    protected static final File STORAGE_DIR = Config.get().getStorageDir();
 
     protected Storage storage;
     /*если указать private, то наследник AbstractArrayStorageTest не видит storage,
@@ -34,11 +34,17 @@ public abstract class AbstractStorageTest {
     private static final String FULL_NAME_4 = "4";
     private static final String FULL_NAME_5 = "5";
 
-    private static final Resume resume1 = ResumeTestData.fillResume(UUID_1, FULL_NAME_1);
+    Resume resume1 = new Resume(UUID_1, FULL_NAME_1);
+    Resume resume2 = new Resume(UUID_2, FULL_NAME_2);
+    Resume resume3 = new Resume(UUID_3, FULL_NAME_3);
+    Resume resume4 = new Resume(UUID_4, FULL_NAME_4);
+    Resume resume5 = new Resume(UUID_3, FULL_NAME_5);
+
+/*    private static final Resume resume1 = ResumeTestData.fillResume(UUID_1, FULL_NAME_1);
     private static final Resume resume2 = ResumeTestData.fillResume(UUID_2, FULL_NAME_2);
     private static final Resume resume3 = ResumeTestData.fillResume(UUID_3, FULL_NAME_3);
     private static final Resume resume4 = ResumeTestData.fillResume(UUID_4, FULL_NAME_4);
-    private static final Resume resume5 = ResumeTestData.fillResume(UUID_3, FULL_NAME_5);
+    private static final Resume resume5 = ResumeTestData.fillResume(UUID_3, FULL_NAME_5);*/
 
     public AbstractStorageTest(Storage storage) {
         this.storage = storage;
