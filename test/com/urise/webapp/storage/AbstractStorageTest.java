@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,11 +23,11 @@ public abstract class AbstractStorageTest {
     и метод getOverflowWithException() для классов на основе массивов не может использовать storage
      */
 
-    private static final String UUID_1 = "1";
-    private static final String UUID_2 = "2";
-    private static final String UUID_3 = "3";
-    private static final String UUID_4 = "4";
-    private static final String UUID_5 = "5";
+    private static final String UUID_1 = UUID.randomUUID().toString();
+    private static final String UUID_2 = UUID.randomUUID().toString();
+    private static final String UUID_3 = UUID.randomUUID().toString();
+    private static final String UUID_4 = UUID.randomUUID().toString();
+    private static final String UUID_5 = UUID.randomUUID().toString();
 
     private static final String FULL_NAME_1 = "1";
     private static final String FULL_NAME_2 = "1";

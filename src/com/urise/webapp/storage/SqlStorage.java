@@ -1,6 +1,5 @@
 package com.urise.webapp.storage;
 
-import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.Resume;
 import com.urise.webapp.sql.SqlHelper;
@@ -20,7 +19,7 @@ public class SqlStorage implements Storage {
     public void clear() {
         sqlHelper.executeSqlQuery("DELETE FROM resume", ps ->
         {
-            ps.executeUpdate();
+            ps.execute();
             return null;
         });
     }
@@ -39,18 +38,14 @@ public class SqlStorage implements Storage {
 
     @Override
     public void save(Resume resume) {
-        try {
-            get(resume.getUuid());
-            throw new ExistStorageException(resume.getUuid());
-        } catch (NotExistStorageException e) {
-            sqlHelper.executeSqlQuery("INSERT INTO resume (uuid, full_name) VALUES ( ?, ? )", ps -> {
-                ps.setString(1, resume.getUuid());
-                ps.setString(2, resume.getFullName());
-                ps.executeUpdate();
-                return null;
-            });
-        }
+        sqlHelper.executeSqlQuery("INSERT INTO resume (uuid, full_name) VALUES ( ?, ? )", ps -> {
+            ps.setString(1, resume.getUuid());
+            ps.setString(2, resume.getFullName());
+            ps.executeUpdate();
+            return null;
+        });
     }
+
 
     @Override
     public Resume get(String uuid) {
@@ -69,8 +64,7 @@ public class SqlStorage implements Storage {
         sqlHelper.executeSqlQuery("DELETE FROM resume WHERE uuid = ?", ps ->
         {
             ps.setString(1, uuid);
-            int rs = ps.executeUpdate();
-            if (rs == 0) {
+            if (ps.executeUpdate() == 0) {
                 throw new NotExistStorageException(uuid);
             }
             return null;
@@ -83,7 +77,7 @@ public class SqlStorage implements Storage {
             List<Resume> list = new ArrayList<>();
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(new Resume(rs.getString("uuid").trim(), rs.getString("full_name")));
+                list.add(new Resume(rs.getString("uuid"), rs.getString("full_name")));
             }
             return list;
         });

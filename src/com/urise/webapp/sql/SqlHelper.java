@@ -1,5 +1,6 @@
 package com.urise.webapp.sql;
 
+import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.StorageException;
 
 import java.sql.Connection;
@@ -14,11 +15,15 @@ public class SqlHelper {
         connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 
-    public <T> T executeSqlQuery(String query, BlockCode<T> BlockCode) {
+    public <T> T executeSqlQuery(String query, BlockCode<T> blockCode) {
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
-            return BlockCode.execute(ps);
+            return blockCode.execute(ps);
         } catch (SQLException e) {
+//          System.out.println(e.getSQLState()); при наличии uuid уже в БД вод ошибки 23505
+            if (e.getSQLState().equals("23505")) {
+                throw new ExistStorageException(e.getMessage());
+            }
             throw new StorageException(e);
         }
     }
