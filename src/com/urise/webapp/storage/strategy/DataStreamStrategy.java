@@ -17,10 +17,10 @@ public class DataStreamStrategy implements SerializeStrategy {
         try (DataOutputStream dos = new DataOutputStream(os)) {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
-            Map<ContactType, Link> contacts = resume.getContacts();
+            Map<ContactType, String> contacts = resume.getContacts();
             writeWithException(dos, contacts.entrySet(), s -> {
                 dos.writeUTF(s.getKey().name());
-                writeLink(dos, s.getValue());
+                dos.writeUTF(s.getValue());
             });
             Map<SectionType, AbstractSection> sections = resume.getSections();
             writeWithException(dos, sections.entrySet(), s -> {
@@ -50,7 +50,7 @@ public class DataStreamStrategy implements SerializeStrategy {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             resume = new Resume(uuid, fullName);
-            readWithException(dis, () -> resume.addContact(ContactType.valueOf(dis.readUTF()), readLink(dis)));
+            readWithException(dis, () -> resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
             readWithException(dis, () -> {
                         SectionType sectionType = SectionType.valueOf(dis.readUTF());
                         switch (sectionType) {

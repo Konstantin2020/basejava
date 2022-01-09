@@ -13,7 +13,7 @@ public class ResumeTestData {
     public static Resume fillResume(String uuid, String fullname) {
         Resume resume = new Resume(uuid, fullname);
         fillContacts(resume);
-        fillSections(resume);
+//      fillSections(resume);
         return resume;
     }
 
@@ -27,20 +27,20 @@ public class ResumeTestData {
     }
 
     private static void fillContacts(Resume resume) {
-        resume.contacts.put(ContactType.PHONE, new Link("+7(812) 855-0482", null));
-        resume.contacts.put(ContactType.MOBILE, new Link("+7(921) 855-1234", null));
-        resume.contacts.put(ContactType.HOME_PHONE, new Link("+8(495) 123-1234", null));
-        resume.contacts.put(ContactType.SKYPE, new Link("skype:grigory.kislin", "skype:grigory.kislin"));
-        resume.contacts.put(ContactType.MAIL, new Link("gkislin@yandex.ru", "mailto:gkislin@yandex.ru"));
-        resume.contacts.put(ContactType.LINKEDIN, new Link("Linkedin", "https://www.linkedin.com/in/gkislin"));
-        resume.contacts.put(ContactType.GITHUB, new Link("Github", "https://github.com/gkislin"));
-        resume.contacts.put(ContactType.STACKOVERFLOW, new Link("StackOverFlow", "https://stackoverflow.com/users/548473"));
-        resume.contacts.put(ContactType.HOMEPAGE, new Link("Homepage", "http://gkislin.ru/"));
+        resume.contacts.put(ContactType.PHONE, "+7(812) 855-0482");
+        resume.contacts.put(ContactType.MOBILE, "+7(921) 855-1234");
+        resume.contacts.put(ContactType.HOME_PHONE, "+8(495) 123-1234");
+        resume.contacts.put(ContactType.SKYPE, "skype:grigory.kislin");
+        resume.contacts.put(ContactType.MAIL, "gkislin@yandex.ru");
+        resume.contacts.put(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
+        resume.contacts.put(ContactType.GITHUB, "https://github.com/gkislin");
+        resume.contacts.put(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
+        resume.contacts.put(ContactType.HOMEPAGE, "http://gkislin.ru/");
 
     }
 
     private static void printContacts(Resume resume) {
-        for (Map.Entry<ContactType, Link> entry : resume.contacts.entrySet()) {
+        for (Map.Entry<ContactType, String> entry : resume.contacts.entrySet()) {
             System.out.println(entry.getKey().getTitle());
             System.out.println(entry.getValue());
         }

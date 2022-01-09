@@ -1,6 +1,5 @@
 package com.urise.webapp.sql;
 
-import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.StorageException;
 
 import java.sql.Connection;
@@ -15,21 +14,36 @@ public class SqlHelper {
         connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 
-    public <T> T executeSqlQuery(String query, BlockCode<T> blockCode) {
+    public <T> T execute(String query, SqlExecutor<T> executor) {
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
-            return blockCode.execute(ps);
+            return executor.execute(ps);
         } catch (SQLException e) {
-//          System.out.println(e.getSQLState()); при наличии uuid уже в БД вод ошибки 23505
-            if (e.getSQLState().equals("23505")) {
-                throw new ExistStorageException(e.getMessage());
-            }
-            throw new StorageException(e);
+            throw ExceptionUtil.convertException(e);
         }
     }
 
-    public interface BlockCode<T> {
-        T execute(PreparedStatement ps) throws SQLException;
+    public <T> T executeWithConn(Connection conn, String query, SqlExecutor<T> executor) throws SQLException {
+        PreparedStatement ps = conn.prepareStatement(query);
+        {
+            return executor.execute(ps);
+        }
+    }
+
+    public <T> T transactionalExecute(SqlTansaction<T> executor) {
+        try (Connection conn = connectionFactory.getConnection()) {
+            try {
+                conn.setAutoCommit(false);
+                T res = executor.execute(conn);
+                conn.commit();
+                return res;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw ExceptionUtil.convertException(e);
+            }
+        } catch (SQLException e) {
+            throw new StorageException(e);
+        }
     }
 }
 
