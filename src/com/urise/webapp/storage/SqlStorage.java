@@ -71,13 +71,11 @@ public class SqlStorage implements Storage {
                     if (!rs.next()) {
                         throw new NotExistStorageException(uuid);
                     }
-                    Resume r = new Resume(uuid, rs.getString("full_name"));
+                    Resume resume = new Resume(uuid, rs.getString("full_name"));
                     do {
-                        String value = rs.getString("value");
-                        ContactType type = ContactType.valueOf(rs.getString("type"));
-                        r.addContact(type, value);
+                        addContactFromDb(resume, rs);
                     } while (rs.next());
-                    return r;
+                    return resume;
                 }
         );
     }
@@ -109,7 +107,7 @@ public class SqlStorage implements Storage {
                             if (!map.containsKey(uuid)) {
                                 map.put(uuid, new Resume(uuid, full_name));
                             }
-                            map.get(uuid).addContact(ContactType.valueOf(rs.getString("type")), rs.getString("value"));
+                            addContactFromDb(map.get(uuid), rs);
                         }
                         return new ArrayList<>(map.values());
                     }
@@ -128,6 +126,13 @@ public class SqlStorage implements Storage {
 /*Приватные методы следует располагать в конце класса по мере их вызова из публичных методов.
 Располагать приватный метод среди публичных допускается только в одном случае:
 только сразу публичного, если этот приватный метод только в нём используется.*/
+
+    private void addContactFromDb(Resume resume, ResultSet rs) throws SQLException {
+        String value = rs.getString("value");
+        if (value != null) {
+            resume.addContact(ContactType.valueOf(rs.getString("type")), value);
+        }
+    }
 
     private void deleteContacts(Connection conn, Resume resume) throws SQLException {
         sqlHelper.executeWithConn(conn, "DELETE FROM contact WHERE resume_uuid = ?;", ps -> {
