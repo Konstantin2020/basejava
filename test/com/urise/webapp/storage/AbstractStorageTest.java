@@ -44,7 +44,7 @@ public abstract class AbstractStorageTest {
     Resume resume5 = new Resume(UUID_3, FULL_NAME_5);*/
 
     private static final Resume resume1 = new Resume(UUID_1, FULL_NAME_1);
-    private static final Resume resume2 = ResumeTestData.fillResume(UUID_2, FULL_NAME_2);
+    private static final Resume resume2 = ResumeTestData.fillResume2(UUID_2, FULL_NAME_2);
     private static final Resume resume3 = ResumeTestData.fillResume(UUID_3, FULL_NAME_3);
     private static final Resume resume4 = ResumeTestData.fillResume(UUID_4, FULL_NAME_4);
     private static final Resume resume5 = ResumeTestData.fillResume(UUID_3, FULL_NAME_5);
@@ -86,12 +86,12 @@ public abstract class AbstractStorageTest {
     @Test
     public void getAllSorted() throws Exception {
         List<Resume> expected = new ArrayList<>();
+        System.out.println();
         expected.add(resume2);
         expected.add(resume3);
         expected.add(resume1);
         Collections.sort(expected);
         List<Resume> actual = storage.getAllSorted();
-//        Arrays.sort(actual);
         assertEquals(expected, actual);
     }
 

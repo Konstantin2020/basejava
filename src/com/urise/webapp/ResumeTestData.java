@@ -13,7 +13,14 @@ public class ResumeTestData {
     public static Resume fillResume(String uuid, String fullname) {
         Resume resume = new Resume(uuid, fullname);
         fillContacts(resume);
-//      fillSections(resume);
+        fillSections(resume);
+        return resume;
+    }
+
+    public static Resume fillResume2(String uuid, String fullname) {
+        Resume resume = new Resume(uuid, fullname);
+        fillContacts2(resume);
+        fillSections(resume);
         return resume;
     }
 
@@ -39,6 +46,12 @@ public class ResumeTestData {
 
     }
 
+    private static void fillContacts2(Resume resume) {
+        resume.contacts.put(ContactType.PHONE, "+6666666");
+        resume.contacts.put(ContactType.MOBILE, "+7777777777");
+        resume.contacts.put(ContactType.HOME_PHONE, "+888888888");
+    }
+
     private static void printContacts(Resume resume) {
         for (Map.Entry<ContactType, String> entry : resume.contacts.entrySet()) {
             System.out.println(entry.getKey().getTitle());
@@ -52,8 +65,8 @@ public class ResumeTestData {
         resume.sections.put(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
         resume.sections.put(SectionType.ACHIEVEMENT, writeListSectionAchieve());
         resume.sections.put(SectionType.QUALIFICATIONS, writeListSectionQualif());
-        resume.sections.put(SectionType.EXPERIENCE, writeListSectionExperience());
-        resume.sections.put(SectionType.EDUCATION, writeListSectionEducation());
+//        resume.sections.put(SectionType.EXPERIENCE, writeListSectionExperience());
+//        resume.sections.put(SectionType.EDUCATION, writeListSectionEducation());
     }
 
     private static OrganizationSection writeListSectionExperience() {
