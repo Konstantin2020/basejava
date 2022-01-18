@@ -162,7 +162,8 @@ public class SqlStorage implements Storage {
                 case ACHIEVEMENT:
                 case QUALIFICATIONS:
                     ArrayList<String> resultList = new ArrayList<>();
-                    ArrayList<String> prepareList = (ArrayList<String>) Stream.of(value.split("\n")).collect(Collectors.toList());
+                    ArrayList<String> prepareList = (ArrayList<String>) Stream.of(value.split("\n"))
+                                                                              .collect(Collectors.toList());
                     for (String rec : prepareList) {
                         if (rec.indexOf("-") == 0) {
                             StringBuilder sb = new StringBuilder(rec);
@@ -186,7 +187,8 @@ public class SqlStorage implements Storage {
                     Map<String, Resume> map = new LinkedHashMap<>();
                     ResultSet rs = ps.executeQuery();
                     while (rs.next()) {
-                        map.put(rs.getString("uuid"), new Resume(rs.getString("uuid"), rs.getString("full_name")));
+                        map.put(rs.getString("uuid"), new Resume(rs.getString("uuid"),
+                                rs.getString("full_name")));
                     }
                     return map;
                 });
@@ -260,7 +262,8 @@ public class SqlStorage implements Storage {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        String stringList = Stream.of(e.getValue()).map(String::valueOf).collect(Collectors.joining("/n"));
+                        String stringList = Stream.of(e.getValue()).map(String::valueOf)
+                                                  .collect(Collectors.joining("/n"));
                         ps.setString(3, stringList);
                         break;
                 }
