@@ -8,12 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
 
 public class SqlStorage implements Storage {
     public final SqlHelper sqlHelper;
@@ -161,19 +156,7 @@ public class SqlStorage implements Storage {
                     break;
                 case ACHIEVEMENT:
                 case QUALIFICATIONS:
-                    ArrayList<String> resultList = new ArrayList<>();
-                    ArrayList<String> prepareList = (ArrayList<String>) Stream.of(value.split("\n"))
-                                                                              .collect(Collectors.toList());
-                    for (String rec : prepareList) {
-                        if (rec.indexOf("-") == 0) {
-                            StringBuilder sb = new StringBuilder(rec);
-                            sb.deleteCharAt(0);
-                            resultList.add(sb.toString());
-                        } else {
-                            resultList.add(rec);
-                        }
-                    }
-                    resume.addSection(sectionType, new ListSection(resultList));
+                    resume.addSection(sectionType, new ListSection(Arrays.asList(value.split("\n"))));
                     break;
             }
         }
@@ -262,8 +245,8 @@ public class SqlStorage implements Storage {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        String stringList = Stream.of(e.getValue()).map(String::valueOf)
-                                                  .collect(Collectors.joining("/n"));
+                        List<String> list = ((ListSection) e.getValue()).getItems();
+                        String stringList = String.join("\n", list);
                         ps.setString(3, stringList);
                         break;
                 }

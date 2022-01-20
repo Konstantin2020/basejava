@@ -16,10 +16,13 @@ import java.util.Map;
 public class ListResumeServlet extends HttpServlet {
     private SqlStorage sqlStorage;
 
+    public void init() {
+        sqlStorage = Config.get().getSqlStorage();
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        sqlStorage = Config.get().getSqlStorage();
         Map<String, String> mapResumes = new LinkedHashMap<>();
         for (Resume r : sqlStorage.getAllSorted()) {
             mapResumes.put(r.getUuid(), r.getFullName());
