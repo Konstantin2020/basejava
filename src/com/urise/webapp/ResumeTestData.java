@@ -65,8 +65,8 @@ public class ResumeTestData {
         resume.sections.put(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
         resume.sections.put(SectionType.ACHIEVEMENT, writeListSectionAchieve());
         resume.sections.put(SectionType.QUALIFICATIONS, writeListSectionQualif());
-//        resume.sections.put(SectionType.EXPERIENCE, writeListSectionExperience());
-//        resume.sections.put(SectionType.EDUCATION, writeListSectionEducation());
+        resume.sections.put(SectionType.EXPERIENCE, writeListSectionExperience());
+        resume.sections.put(SectionType.EDUCATION, writeListSectionEducation());
     }
 
     private static OrganizationSection writeListSectionExperience() {
@@ -131,7 +131,7 @@ public class ResumeTestData {
         lines.add("JavaScript: jQuery, ExtJS, Bootstrap.js, underscore.js");
         lines.add("Scala: SBT, Play2, Specs2, Anorm, Spray, Akka");
         lines.add("Технологии: Servlet, JSP/JSTL, JAX-WS, REST, EJB, RMI, JMS, JavaMail, JAXB, StAX, SAX, DOM, XSLT, MDB, JMX, JDBC, JPA, JNDI, JAAS, SOAP, AJAX, Commet, HTML5, ESB, CMIS, BPMN2, LDAP, OAuth1, OAuth2, JWT.");
-        lines.add("Инструменты: Maven + plugin development, Gradle, настройка Ngnix,");
+        lines.add("Инструменты: Maven + plugin development, Gradle, настройка Ngnix.");
         lines.add("администрирование Hudson/Jenkins, Ant + custom task, SoapUI, JPublisher, Flyway, Nagios, iReport, OpenCmis, Bonita, pgBouncer.");
         lines.add("Отличное знание и опыт применения концепций ООП, SOA, шаблонов проектрирования, архитектурных шаблонов, UML, функционального программирования");
         lines.add("Родной русский, английский \"upper intermediate\"");
