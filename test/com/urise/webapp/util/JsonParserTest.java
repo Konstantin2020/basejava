@@ -8,12 +8,10 @@ import org.junit.Test;
 
 import static com.urise.webapp.TestData.R1;
 
-
-
 public class JsonParserTest {
     @Test
     public void testResume() throws Exception {
-        String json = JsonParser.write(R1,Resume.class);
+        String json = JsonParser.write(R1, Resume.class);
         System.out.println(json);
         Resume resume = JsonParser.read(json, Resume.class);
         Assert.assertEquals(R1, resume);

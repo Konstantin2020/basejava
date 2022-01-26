@@ -43,8 +43,23 @@ public class JspHelper {
         return String.join("\n", listSection.getItems());
     }
 
-    private static String toViewListSection(ListSection listSection) {
+/*    private static String toViewListSection(ListSection listSection) {
         return String.join("</br>", listSection.getItems());
+    }*/
+
+
+    private static String toViewListSection(ListSection listSection) {
+        List<String> list = listSection.getItems();
+        StringBuilder sb = new StringBuilder();
+        list.forEach(item -> {
+            sb.append("<ul>")
+                    .append("<li>")
+                    .append(item)
+                    .append("</li>")
+                    .append("</p>")
+                    .append("</ul>");
+        });
+        return sb.toString();
     }
 
     private static String toEditOrganizationSection(OrganizationSection organizationSection) {

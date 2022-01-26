@@ -18,7 +18,7 @@
         <dl>
             <dt>Имя:</dt>
             <dd><input type="text" name="fullName" size=50 value="${resume.fullName}" required
-                       pattern="[А-Яа-яa-zA-Z0-9]{6,}"></dd>
+                       pattern="[А-Яа-яa-zA-Z0-9\s]{3,}"></dd>
         </dl>
         <h3>Контакты:</h3>
         <c:forEach var="type" items="<%=ContactType.values()%>">
@@ -34,13 +34,19 @@
                     <h3><label>${type.getTitle()}</label></h3>
                     <textarea disabled id="${type}"
                               name="${type.name()}" cols="120"
+                              rows="11">${JspHelper.toJspSection(type, resume.getSection(type))}</textarea>
+                </c:when>
+                <c:when test="${type eq SectionType.PERSONAL || type eq SectionType.OBJECTIVE}">
+                    <h3><label>${type.getTitle()}</label></h3>
+                    <textarea id="${type}"
+                              name="${type.name()}" cols="120"
                               rows="3">${JspHelper.toJspSection(type, resume.getSection(type))}</textarea>
                 </c:when>
                 <c:otherwise>
                     <h3><label>${type.getTitle()}</label></h3>
                     <textarea id="${type}"
                               name="${type.name()}" cols="120"
-                              rows="3">${JspHelper.toJspSection(type, resume.getSection(type))}</textarea>
+                              rows="15">${JspHelper.toJspSection(type, resume.getSection(type))}</textarea>
                 </c:otherwise>
             </c:choose>
         </c:forEach>
