@@ -36,7 +36,7 @@ public class Link implements Serializable {
 
     @Override
     public String toString() {
-        return "Link( " + name + ',' + url + ')';
+        return url == null ? name : name + ' ' + url;
     }
 
     @Override

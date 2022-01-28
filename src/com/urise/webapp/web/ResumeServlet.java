@@ -10,8 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
-
+import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
 
@@ -103,6 +105,15 @@ public class ResumeServlet extends HttpServlet {
                     case QUALIFICATIONS:
                         resume.addSection(type, getListSection(value));
                         break;
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        OrganizationSection orgSection = getOrganizationSection(request, type);
+                        if (orgSection == null) {
+                            resume.getSections().remove(type);
+                        } else {
+                            resume.addSection(type, orgSection);
+                        }
+                        break;
                 }
             } else {
                 resume.getSections().remove(type);
@@ -118,4 +129,48 @@ public class ResumeServlet extends HttpServlet {
         return new ListSection(Arrays.asList(value.replaceAll("</br>", "")
                 .split("\\s*\\r\\n\\s*")));
     }
+
+    private OrganizationSection getOrganizationSection(HttpServletRequest request, SectionType type) {
+        List<Organization> organizations = new ArrayList<>();
+        String[] organizationNames = request.getParameterValues(type.name() + "organizationName");
+        String[] organizationUrls = request.getParameterValues(type.name() + "url");
+        for (int i = 0; i < organizationNames.length; i++) {
+            String organizationName = organizationNames[i];
+            String organizationUrl = organizationUrls[i];
+            if (isReal(organizationName)) {
+                List<Organization.Position> positionsFromJsp = getPositionsFromJsp(
+                        request.getParameterValues(type.name() + i + "startDate"),
+                        request.getParameterValues(type.name() + i + "endDate"),
+                        request.getParameterValues(type.name() + i + "title"),
+                        request.getParameterValues(type.name() + i + "description"));
+                if (positionsFromJsp.size() != 0) {
+                    organizations.add(new Organization(new Link(organizationName, organizationUrl), positionsFromJsp));
+                }
+            }
+        }
+        return organizations.size() == 0 ? null : new OrganizationSection(organizations);
+    }
+
+    private List<Organization.Position> getPositionsFromJsp(String[] startDates, String[] endDates, String[] titles,
+                                                            String[] descriptions) {
+        List<Organization.Position> positionsFromJsp = new ArrayList<>();
+        for (int i = 0; i < titles.length; i++) {
+            if (isReal(titles[i]) && isReal(startDates[i])) {
+                String description = descriptions == null ? null : descriptions[i];
+                Organization.Position positionFromJsp = new Organization.Position(
+                        checkDate(startDates[i]), checkDate(endDates[i]), titles[i], description);
+                positionsFromJsp.add(positionFromJsp);
+            }
+        }
+        return positionsFromJsp;
+    }
+
+    private boolean isReal(String str) {
+        return str != null && !str.isEmpty();
+    }
+
+    private LocalDate checkDate(String str) {
+        return str.isEmpty() ? null : LocalDate.parse(str);
+    }
+
 }

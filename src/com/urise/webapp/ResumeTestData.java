@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
 public class ResumeTestData {
 
     public static Resume fillResume(String uuid, String fullname) {
@@ -90,7 +89,7 @@ public class ResumeTestData {
         positions.add(new Organization.Position(1987, Month.SEPTEMBER, 1993, Month.JULY, "Аспирантура (программист С, С++)", null));
         positions.add(new Organization.Position(1993, Month.SEPTEMBER, 1996, Month.JULY, "Инженер (программист Fortran, C)", null));
 
-        Organization edu = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", null, positions);
+        Organization edu = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "https://www.spb.ru", positions);
 
         List<Organization> organizationList = new ArrayList<>();
         organizationList.add(edu);

@@ -47,7 +47,6 @@ public class JspHelper {
         return String.join("</br>", listSection.getItems());
     }*/
 
-
     private static String toViewListSection(ListSection listSection) {
         List<String> list = listSection.getItems();
         StringBuilder sb = new StringBuilder();
@@ -63,7 +62,7 @@ public class JspHelper {
     }
 
     private static String toEditOrganizationSection(OrganizationSection organizationSection) {
-        return organizationSection.toString();
+        return "";
     }
 
     private static String toViewOrganizationSection(OrganizationSection organizationSection) {
@@ -72,7 +71,7 @@ public class JspHelper {
         list.forEach(organization -> {
             sb.append("<p>")
                     .append("<b>")
-                    .append(organization.getHomePage())
+                    .append(organization.getHomePage().toString())
                     .append("</b>")
                     .append("</p>")
                     .append("<p>")
