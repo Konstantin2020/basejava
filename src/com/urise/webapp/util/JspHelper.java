@@ -3,6 +3,7 @@ package com.urise.webapp.util;
 import com.urise.webapp.model.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,8 +41,15 @@ public class JspHelper {
     }
 
     private static String toEditListSection(ListSection listSection) {
-        return String.join("\n", listSection.getItems());
-    }
+        List<String> prepareList = listSection.getItems();
+        List<String> resultList = new ArrayList<>();
+        for(String item : prepareList){
+            if (item != null && item.trim().length() != 0) {
+                resultList.add(item);
+            }
+        }
+        return String.join("\n", resultList);
+     }
 
 /*    private static String toViewListSection(ListSection listSection) {
         return String.join("</br>", listSection.getItems());
