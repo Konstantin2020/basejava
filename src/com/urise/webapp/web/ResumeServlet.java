@@ -3,6 +3,7 @@ package com.urise.webapp.web;
 import com.urise.webapp.Config;
 import com.urise.webapp.model.*;
 import com.urise.webapp.storage.Storage;
+import com.urise.webapp.util.DateUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -10,10 +11,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.urise.webapp.util.DateUtil.parse;
 
 public class ResumeServlet extends HttpServlet {
 
@@ -155,22 +160,45 @@ public class ResumeServlet extends HttpServlet {
                                                             String[] descriptions) {
         List<Organization.Position> positionsFromJsp = new ArrayList<>();
         for (int i = 0; i < titles.length; i++) {
+            String strStartDate = startDates[i];
+            String strEndDate = endDates[i];
             if (isReal(titles[i]) && isReal(startDates[i])) {
                 String description = descriptions == null ? null : descriptions[i];
-                Organization.Position positionFromJsp = new Organization.Position(
-                        checkDate(startDates[i]), checkDate(endDates[i]), titles[i], description);
-                positionsFromJsp.add(positionFromJsp);
+                if (isValidDate(strStartDate) && (isValidDate(strEndDate) || endDates[i].equals("Сейчас"))
+                        && !strStartDate.equals(strEndDate) && checkStartEndDates(strStartDate, strEndDate)) {
+                    Organization.Position positionFromJsp = new Organization.Position(
+                            DateUtil.parse(startDates[i]), parse(endDates[i]), titles[i], description);
+                    positionsFromJsp.add(positionFromJsp);
+                }
             }
         }
         return positionsFromJsp;
     }
 
+
     private boolean isReal(String str) {
         return str != null && !str.isEmpty();
     }
 
-    private LocalDate checkDate(String str) {
-        return str.isEmpty() ? null : LocalDate.parse(str);
+    public static boolean isValidDate(String date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/yyyy");
+        dateFormat.setLenient(false);
+        try {
+            dateFormat.parse(date.trim());
+        } catch (ParseException pe) {
+            return false;
+        }
+        return true;
     }
 
+    private boolean checkStartEndDates(String strStartDate, String strEndDate) {
+        if (strEndDate.equals("Сейчас") ||
+                YearMonth.parse(strStartDate, DateUtil.DATE_FORMATTER)
+                        .isBefore(YearMonth.parse(strEndDate, DateUtil.DATE_FORMATTER))) {
+            return true;
+        }
+        return false;
+    }
 }
+
+

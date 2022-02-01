@@ -1,6 +1,7 @@
 <%@ page import="com.urise.webapp.model.ContactType" %>
 <%@ page import="com.urise.webapp.model.SectionType" %>
 <%@ page import="com.urise.webapp.util.JspHelper" %>
+<%@ page import="com.urise.webapp.util.DateUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -46,17 +47,21 @@
                                    value="${organization.homePage.getName()}">
                         </label></h3>
                         <p><label>Сайт организации
-                            <input type="text" name="${type.name()}url" size="30"
-                                   value="${organization.homePage.getUrl()}">
+                            <input type="url" name="${type.name()}url" size="30"
+                                   value="${organization.homePage.getUrl()}"
+                                   placeholder="Введите ссылку на сайт, если он есть">
                         </label></p>
                         <c:forEach var="position" items="${organization.positions}">
+
                             <p><label>Дата начала работы
-                                <input type="date" name="${type.name()}${organizationCount}startDate"
-                                       value="${position.startDate}">
+                                <input type="text" name="${type.name()}${organizationCount}startDate"
+                                       value="${DateUtil.format(position.getStartDate())}" placeholder="MM/yyyy"
+                                       size="7">
                             </label></p>
                             <p><label>Дата окончания работы
-                                <input type="date" name="${type.name()}${organizationCount}endDate"
-                                       value="${position.endDate}">
+                                <input type="text" name="${type.name()}${organizationCount}endDate"
+                                       value="${DateUtil.format(position.getEndDate())}"
+                                       placeholder="MM/yyyy или Сейчас" size="15">
                             </label></p>
                             <p><label>Должность
                                 <input type="text" name="${type.name()}${organizationCount}title" size="40"
@@ -71,10 +76,12 @@
                         </c:forEach>
                         <h4>Добавить новую позицию для организации ${organization.homePage}</h4>
                         <p><label>Укажите дату начала работы
-                            <input type="date" name="${type.name()}${organizationCount}startDate">
+                            <input type="text" name="${type.name()}${organizationCount}startDate" placeholder="MM/yyyy"
+                                   size="7">
                         </label></p>
                         <p><label>Укажите дату окончания работы
-                            <input type="date" name="${type.name()}${organizationCount}endDate">
+                            <input type="text" name="${type.name()}${organizationCount}endDate"
+                                   placeholder="MM/yyyy или Сейчас" size="15">
                         </label></p>
                         <p><label>Укажите должность
                             <input type="text" name="${type.name()}${organizationCount}title" size="40">
@@ -92,13 +99,16 @@
                         <input type="text" name="${type.name()}organizationName" size="50">
                     </label></p>
                     <p><label>Укажите сайт организации
-                        <input type="text" name="${type.name()}url" size="30">
+                        <input type="url" name="${type.name()}url" size="30"
+                               placeholder="Введите ссылку на сайт, если он есть">
                     </label></p>
                     <p><label>Укажите дату начала работы
-                        <input type="date" name="${type.name()}${organizationCount}startDate">
+                        <input type="text" name="${type.name()}${organizationCount}startDate" placeholder="MM/yyyy"
+                               size="7">
                     </label></p>
                     <p><label>Укажите дату окончания работы
-                        <input type="date" name="${type.name()}${organizationCount}endDate">
+                        <input type="text" name="${type.name()}${organizationCount}endDate"
+                               placeholder="MM/yyyy или Сейчас" size="15">
                     </label></p>
                     <p><label>Укажите должность
                         <input type="text" name="${type.name()}${organizationCount}title" size="40">

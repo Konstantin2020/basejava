@@ -2,7 +2,6 @@ package com.urise.webapp.util;
 
 import com.urise.webapp.model.*;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,13 +42,13 @@ public class JspHelper {
     private static String toEditListSection(ListSection listSection) {
         List<String> prepareList = listSection.getItems();
         List<String> resultList = new ArrayList<>();
-        for(String item : prepareList){
+        for (String item : prepareList) {
             if (item != null && item.trim().length() != 0) {
                 resultList.add(item);
             }
         }
         return String.join("\n", resultList);
-     }
+    }
 
 /*    private static String toViewListSection(ListSection listSection) {
         return String.join("</br>", listSection.getItems());
@@ -78,11 +77,22 @@ public class JspHelper {
         StringBuilder sb = new StringBuilder();
         list.forEach(organization -> {
             sb.append("<p>")
-                    .append("<b>")
-                    .append(organization.getHomePage().toString())
-                    .append("</b>")
-                    .append("</p>")
-                    .append("<p>")
+                    .append("<b>");
+            if (organization.getHomePage().getUrl() == null || organization.getHomePage().getUrl().isEmpty()) {
+                sb.append("<p>")
+                        .append(organization.getHomePage().getName())
+                        .append("</b>")
+                        .append("</p>");
+            } else {
+                sb.append("<a href=")
+                        .append(organization.getHomePage().getUrl())
+                        .append(">")
+                        .append(organization.getHomePage().getName())
+                        .append("</a>")
+                        .append("</b>")
+                        .append("</p>");
+            }
+            sb.append("<p>")
                     .append("<ul>");
             organization.getPositions()
                     .forEach(position ->
@@ -97,22 +107,36 @@ public class JspHelper {
 
     private static String toViewPosition(Organization.Position position) {
         StringBuilder sb = new StringBuilder();
-        LocalDate endDate = position.getEndDate();
-        sb.append("<p>")
-                .append(position.getStartDate())
-                .append(" - ")
-                .append((endDate.equals(DateUtil.NOW) ? "сейчас" : endDate))
-                .append("</p>")
-                .append("<p>")
+        sb.append("<table width=\"100%\" cellpadding=\"10\">")
+                .append("<tr>")
+                .append("<td width=\"20%\">")
+                .append(formatDates(position))
+                .append("</td>")
+                .append("<td>")
                 .append(position.getTitle())
-                .append("</p>");
+                .append("</td>")
+                .append("</tr>");
         String description = position.getDescription();
         if (description != null && !description.isEmpty()) {
-            sb.append("<p>")
+            sb.append("<tr>")
+                    .append("<td>")
+                    .append(" ")
+                    .append("</td>")
+                    .append("<td>")
                     .append(description)
-                    .append("</p>");
+                    .append("</td>")
+                    .append("</tr>");
         }
+        sb.append("</table>");
         return sb.toString();
+    }
+
+    public static boolean isEmpty(String str) {
+        return str == null || str.trim().length() == 0;
+    }
+
+    public static String formatDates(Organization.Position position) {
+        return DateUtil.format(position.getStartDate()) + " - " + DateUtil.format(position.getEndDate());
     }
 }
 
