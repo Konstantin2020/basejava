@@ -219,9 +219,9 @@ public class SqlStorage implements Storage {
     }
 
     private void addSectionFromDb(Resume resume, ResultSet rs) throws SQLException {
-        String type = rs.getString("section_type");
+        String type = rs.getString("type");
         SectionType sectionType = SectionType.valueOf(type);
-        String value = rs.getString("section_value");
+        String value = rs.getString("value");
         resume.addSection(sectionType, JsonParser.read(value, AbstractSection.class));
     }
 
@@ -294,8 +294,8 @@ public class SqlStorage implements Storage {
     }
 
     private void insertSections(Connection conn, Resume resume) throws SQLException {
-        sqlHelper.executeWithConn(conn, "INSERT INTO section (resume_uuid, section_type, " +
-                "section_value) VALUES ( ?, ? ,?)", ps ->
+        sqlHelper.executeWithConn(conn, "INSERT INTO section (resume_uuid, type, " +
+                "value) VALUES ( ?, ? ,?)", ps ->
         {
             for (Map.Entry<SectionType, AbstractSection> e : resume.getSections().entrySet()) {
                 ps.setString(1, resume.getUuid());
